@@ -1,5 +1,3 @@
-### Note: This is old codes that had been used in last year's competition. Remember to push your code to the `main` repository, not here.
-
 # Priorities:
 
 - [x] Perfect point and shoot
