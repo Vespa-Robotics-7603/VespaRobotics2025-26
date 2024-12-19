@@ -1,0 +1,104 @@
+package frc.robot;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+
+public class Robot extends TimedRobot {
+
+    private final XboxController controller = new XboxController(0);
+
+    // Define constants for the kinematics
+    private static final double TRACK_WIDTH = 0.5; // Distance between left and right wheels (meters)
+    private static final double WHEEL_BASE = 0.5;  // Distance between front and back wheels (meters)
+
+    private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+        new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2),  // Front left
+        new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2), // Front right
+        new Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2), // Back left
+        new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2) // Back right
+    );
+
+    SwerveModulePosition[] modulePositions = {new SwerveModulePosition()};
+    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
+        kinematics, Rotation2d.fromDegrees(0), modulePositions
+    );
+
+    private final SwerveModule[] swerveModules = {
+        new SwerveModule(1, 2), // Front left
+        new SwerveModule(3, 4), // Front right
+        new SwerveModule(5, 6), // Back left
+        new SwerveModule(7, 8)  // Back right
+    };
+
+    @Override
+    public void robotInit() {
+        SmartDashboard.putNumber("X Speed", 0);
+        SmartDashboard.putNumber("Y Speed", 0);
+        SmartDashboard.putNumber("Rotation Speed", 0);
+    }
+
+    @Override
+    public void teleopPeriodic() {
+        double xSpeed = controller.getLeftX(); // Strafe
+        double ySpeed = controller.getLeftY(); // Forward/backward
+        double rotationSpeed = controller.getRightX(); // Rotation
+
+        xSpeed *= 3.0; // meters per second
+        ySpeed *= 3.0;
+        rotationSpeed *= Math.PI; // radians per second
+
+        SmartDashboard.putNumber("X Speed", xSpeed);
+        SmartDashboard.putNumber("Y Speed", ySpeed);
+        SmartDashboard.putNumber("Rotation Speed", rotationSpeed);
+
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(
+            new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed)
+        );
+
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, 3.0);
+
+        for (int i = 0; i < swerveModules.length; i++) {
+            swerveModules[i].setDesiredState(states[i]);
+        }
+    }
+
+    public static class SwerveModule {
+        private final TalonFX driveMotor;
+        private final TalonFX steerMotor;
+
+        public SwerveModule(int driveMotorID, int steerMotorID) {
+            driveMotor = new TalonFX(driveMotorID);
+            steerMotor = new TalonFX(steerMotorID);
+
+            steerMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        }
+
+        public void setDesiredState(SwerveModuleState state) {
+            double driveSpeed = state.speedMetersPerSecond;
+            double steerAngle = state.angle.getDegrees();
+
+            driveMotor.set(ControlMode.PercentOutput, driveSpeed / 3.0); // Scale speed
+
+            double currentAngle = steerMotor.getSelectedSensorPosition() * (360.0 / 4096.0); // Convert encoder units to degrees
+            double angleError = steerAngle - currentAngle;
+
+            if (angleError > 180) angleError -= 360;
+            if (angleError < -180) angleError += 360;
+
+            steerMotor.set(ControlMode.Position, (currentAngle + angleError) * (4096.0 / 360.0)); // Set target position in encoder units
+
+            SmartDashboard.putNumber("Drive Speed", driveSpeed);
+            SmartDashboard.putNumber("Steer Angle", steerAngle);
+        }
+    }
+}
