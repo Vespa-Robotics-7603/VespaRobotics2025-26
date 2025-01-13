@@ -59,4 +59,7 @@ public class SwerveModule {
         turnMotor.setControl(request);
         System.out.println("Ran TurnBy");
     }
+    public CANcoder getCoder() {
+        return coder;
+    }
 }
