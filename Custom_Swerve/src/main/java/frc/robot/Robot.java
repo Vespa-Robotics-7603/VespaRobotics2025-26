@@ -24,10 +24,10 @@ public class Robot extends TimedRobot {
    */
   CANcoder coder1 = new CANcoder(1);
   CANcoder coder3 = new CANcoder(3);
-  SwerveModule moduleFL = new SwerveModule(new TalonFX(10),new TalonFX(11),new CANcoder(1),0);
-  SwerveModule moduleFR = new SwerveModule(new TalonFX(40),new TalonFX(41),new CANcoder(4),0);
-  SwerveModule moduleBL = new SwerveModule(new TalonFX(20),new TalonFX(21),new CANcoder(2),0.25);
-  SwerveModule moduleBR = new SwerveModule(new TalonFX(30),new TalonFX(31),new CANcoder(3),0.25);
+  SwerveModule moduleFL = new SwerveModule(new TalonFX(10),new TalonFX(11),new CANcoder(1),0.350,-1);
+  SwerveModule moduleFR = new SwerveModule(new TalonFX(40),new TalonFX(41),new CANcoder(4),0.350,1);
+  SwerveModule moduleBL = new SwerveModule(new TalonFX(20),new TalonFX(21),new CANcoder(2),0.350,-1);
+  SwerveModule moduleBR = new SwerveModule(new TalonFX(30),new TalonFX(31),new CANcoder(3),0.350,1);
   DriveTrain robot = new DriveTrain(moduleFL,moduleFR,moduleBL,moduleBR);
   XboxController joysticks = new XboxController(0);
   @Override
@@ -53,8 +53,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
       //moduleFL.TurnTo(controller.getRawAxis(1));
-      robot.setDriveDirection(joysticks.getRawAxis(0));
-      robot.setSpeed(joysticks.getRawAxis(1)/5);
+      robot.setDriveDirection(-joysticks.getRawAxis(0));
+      robot.setSpeed((joysticks.getRawAxis(3)-joysticks.getRawAxis(2))/5);
       double coder1reading = coder1.getPosition().getValueAsDouble();
       double coder3reading = coder3.getPosition().getValueAsDouble();
   }

@@ -14,12 +14,14 @@ public class SwerveModule {
     private TalonFX turnMotor;
     private CANcoder coder;
     private double offset;
+    private double direction;
     Slot0Configs pidConfigs = new Slot0Configs();
-    SwerveModule(TalonFX driveMotor, TalonFX turnMotor, CANcoder coder, double offset){
+    SwerveModule(TalonFX driveMotor, TalonFX turnMotor, CANcoder coder, double offset, double direction){
         this.driveMotor = driveMotor;
         this.turnMotor = turnMotor;
         this.coder = coder;
         this.offset = offset;
+        this.direction = direction;
 
         //These slot configs are copied from the pheonix 6 documentation and should be
         //Accurate for talon motors, although we could recalculate if we want
@@ -36,7 +38,7 @@ public class SwerveModule {
         
     }
     public void setDriveSpeed(double speed){
-        driveMotor.set(speed);
+        driveMotor.set(speed*direction);
     }
     public void setTurnSpeed(double speed){
         //This is deprecated and should only be used for testing
