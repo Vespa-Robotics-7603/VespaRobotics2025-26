@@ -50,7 +50,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
       //moduleFL.TurnTo(controller.getRawAxis(1));
-      robot.turnTo(joysticks.getRawAxis(2));
+      robot.setDriveDirection(joysticks.getRawAxis(2));
       robot.setSpeed(joysticks.getRawAxis(1)/2);
   }
 

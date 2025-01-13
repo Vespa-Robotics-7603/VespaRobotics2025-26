@@ -11,7 +11,7 @@ public class Drivetrain {
         module3 = modules[3];
         module4 = modules[4];
     }
-    public void turnTo(double angle){
+    public void setDriveDirection(double angle){
         module1.TurnTo(angle);
         module2.TurnTo(angle);
         module3.TurnTo(angle);

@@ -43,14 +43,8 @@ public class SwerveModule {
         turnMotor.set(speed);
     }
     public void TurnTo(Double rotations){
-        //I think that the whole trapaziod profile thing just takes where you are now, and
-        //where you want to be, and converts it. It's not complicated hopefully. Essentially
-        //You create the profile and give it a max speed. From there, you give it a state
-        //That it should get to, and the state that it is currently I beleive (I think that's
-        //what the empty contructor does anyways) and from there it automatically calculates
-        //how to get there. 
-        
-        //Create trapaziod profil with max velocity of 10rpm and max acceleration of 20rpm
+        //Trapaziod profile calculates the place on the motor to which you must turn
+        //and turns to motor too it
         TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(100, 200));
         //create the state in which you want it to end up
         TrapezoidProfile.State goal = new TrapezoidProfile.State(rotations/4 + offset,2);
