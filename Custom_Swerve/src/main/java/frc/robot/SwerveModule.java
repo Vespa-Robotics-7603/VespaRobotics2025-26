@@ -15,7 +15,7 @@ public class SwerveModule {
     private CANcoder coder;
     private double offset;
     Slot0Configs pidConfigs = new Slot0Configs();
-    SwerveModule(TalonFX driveMotor, TalonFX turnMotor, CANcoder coder, int offset){
+    SwerveModule(TalonFX driveMotor, TalonFX turnMotor, CANcoder coder, double offset){
         this.driveMotor = driveMotor;
         this.turnMotor = turnMotor;
         this.coder = coder;
