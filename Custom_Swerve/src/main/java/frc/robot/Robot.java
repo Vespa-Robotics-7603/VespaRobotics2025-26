@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -19,13 +21,12 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-  CANcoder coder = new CANcoder(1);
-  TalonFX drivemotorFL = new TalonFX(10);
-  TalonFX turnMotorFL = new TalonFX(11);
-  SwerveModule moduleFL = new SwerveModule(drivemotorFL,turnMotorFL,coder);
-  TalonFX drivemotorFR = new TalonFX(40);
-  TalonFX drivemotorBL = new TalonFX(20);
-  TalonFX drivemotorBR = new TalonFX(30);
+  SwerveModule moduleFL = new SwerveModule(new TalonFX(10),new TalonFX(11),new CANcoder(1),0);
+  SwerveModule moduleFR = new SwerveModule(new TalonFX(40),new TalonFX(41),new CANcoder(4),0);
+  SwerveModule moduleBL = new SwerveModule(new TalonFX(20),new TalonFX(21),new CANcoder(2),0);
+  SwerveModule moduleBR = new SwerveModule(new TalonFX(30),new TalonFX(31),new CANcoder(3),0);
+  Drivetrain robot = new Drivetrain(moduleFL,moduleFR,moduleBL,moduleBR);
+  XboxController joysticks = new XboxController(0);
   @Override
   public void robotInit(){
     
@@ -48,13 +49,13 @@ public class Robot extends TimedRobot {
   }
   @Override
   public void teleopPeriodic() {
-    //turnMotorFL.set(0.4);
-    System.out.println(moduleFL.getOffset());
-    moduleFL.setDriveSpeed(0.1);
-    moduleFL.TurnTo(90);    
+      //moduleFL.TurnTo(controller.getRawAxis(1));
+      robot.turnTo(joysticks.getRawAxis(2));
+      robot.setSpeed(joysticks.getRawAxis(1)/2);
   }
 
   @Override
+
   public void disabledInit() {}
 
   @Override

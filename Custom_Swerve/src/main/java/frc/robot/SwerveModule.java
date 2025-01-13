@@ -1,50 +1,68 @@
 package frc.robot;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
-import static edu.wpi.first.units.Units.Degree;
+
 
 
 public class SwerveModule {
-    TalonFX driveMotor;
-    TalonFX turnMotor;
-    CANcoder coder;
-    double offset;
-    SwerveModule(TalonFX driveMotor, TalonFX turnMotor, CANcoder coder){
+    private TalonFX driveMotor;
+    private TalonFX turnMotor;
+    private CANcoder coder;
+    private double offset;
+    Slot0Configs pidConfigs = new Slot0Configs();
+    SwerveModule(TalonFX driveMotor, TalonFX turnMotor, CANcoder coder, int offset){
         this.driveMotor = driveMotor;
         this.turnMotor = turnMotor;
         this.coder = coder;
-        this.offset = coder.getPosition().getValue().abs(Degree);
-        System.out.println(offset);
+        this.offset = offset;
+
+        //These slot configs are copied from the pheonix 6 documentation and should be
+        //Accurate for talon motors, although we could recalculate if we want
+        pidConfigs.kS = 0.25; // Add 0.25 V output to overcome static friction
+        pidConfigs.kV = 0.5; // A velocity target of 1 rps results in 0.12 V output
+        pidConfigs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+        pidConfigs.kP = 10; // An error of 1 rps results in 0.11 V output
+        pidConfigs.kI = 0; // no output for integrated error
+        pidConfigs.kD = 0.2; // no output for error derivative
+
+
+        turnMotor.getConfigurator().apply(pidConfigs);
+        driveMotor.getConfigurator().apply(pidConfigs);
+        
     }
     public void setDriveSpeed(double speed){
         driveMotor.set(speed);
     }
     public void setTurnSpeed(double speed){
+        //This is deprecated and should only be used for testing
         turnMotor.set(speed);
     }
-    public void setOffset(double offset) {
-        this.offset = offset;
+    public void TurnTo(Double rotations){
+        //I think that the whole trapaziod profile thing just takes where you are now, and
+        //where you want to be, and converts it. It's not complicated hopefully. Essentially
+        //You create the profile and give it a max speed. From there, you give it a state
+        //That it should get to, and the state that it is currently I beleive (I think that's
+        //what the empty contructor does anyways) and from there it automatically calculates
+        //how to get there. 
+        
+        //Create trapaziod profil with max velocity of 10rpm and max acceleration of 20rpm
+        TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(100, 200));
+        //create the state in which you want it to end up
+        TrapezoidProfile.State goal = new TrapezoidProfile.State(rotations/4 + offset,2);
+        //create the state in which it is currently
+        TrapezoidProfile.State setPoint = new TrapezoidProfile.State();
+        //calculate how to get from the current state to the final goal state
+        setPoint = profile.calculate(10, setPoint, goal);
+        //Set requests to the motor
+        PositionVoltage request = new PositionVoltage(0).withSlot(0);
+        request.Velocity = setPoint.velocity;
+        request.Position = setPoint.position;
+        turnMotor.setControl(request);
+        System.out.println("Ran TurnBy");
     }
-    public double getOffset() {
-        return offset;
-    }
-    public void TurnTo(int Degrees){
-        double speed;
-        if(Degrees>1){
-            speed = 0.1;
-        } else {
-            speed = -0.1;
-        }
-        double targetTurn = offset + Degrees;
-        System.out.println(targetTurn);
-        System.out.println(coder.getPosition().getValue().in(Degree));
-        if(coder.getPosition().getValue().in(Degree) == targetTurn){
-            turnMotor.set(0);
-        } else {
-            turnMotor.set(speed);
-        }
-    }
-    
 }
