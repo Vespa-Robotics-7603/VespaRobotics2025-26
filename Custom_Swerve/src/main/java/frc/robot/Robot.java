@@ -54,8 +54,15 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
       //moduleFL.TurnTo(controller.getRawAxis(1));
+      double stickSpeed = joysticks.getRawAxis(0)+joysticks.getRawAxis(1);
+      if(stickSpeed>1){
+        stickSpeed=1;
+      }
+      if(stickSpeed<-1){
+        stickSpeed = -1;
+      }
       robot.setDriveDirection(-joysticks.getRawAxis(0));
-      robot.setSpeed((joysticks.getRawAxis(3)-joysticks.getRawAxis(2))/5);
+      robot.setSpeed(-stickSpeed/5);
       robot.setTurn(joysticks.getRawAxis(4));
       double coder1reading = coder1.getPosition().getValueAsDouble();
       double coder3reading = coder3.getPosition().getValueAsDouble();
