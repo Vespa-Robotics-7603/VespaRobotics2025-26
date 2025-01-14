@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 
+import java.time.OffsetDateTime;
+
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -53,19 +55,41 @@ public class Robot extends TimedRobot {
   }
   @Override
   public void teleopPeriodic() {
-      //moduleFL.TurnTo(controller.getRawAxis(1));
-      double stickSpeed = joysticks.getRawAxis(0)+joysticks.getRawAxis(1);
-      if(stickSpeed>1){
-        stickSpeed=1;
-      }
-      if(stickSpeed<-1){
-        stickSpeed = -1;
-      }
-      robot.setDriveDirection(-joysticks.getRawAxis(0));
-      robot.setSpeed(-stickSpeed/5);
-      robot.setTurn(joysticks.getRawAxis(4));
-      double coder1reading = coder1.getPosition().getValueAsDouble();
-      double coder3reading = coder3.getPosition().getValueAsDouble();
+    switch (joysticks.getPOV()) {
+        case 0:
+            robot.setDriveDirection(OFFSET);
+            break;
+        case 45:
+            robot.setDriveDirection(0.125 + OFFSET);
+            break;
+        case 90:
+            robot.setDriveDirection(0.25 + OFFSET);
+            break;
+        case 135:
+            robot.setDriveDirection(0.375 + OFFSET);
+            break;
+        case 180:
+            robot.setDriveDirection(0.5 + OFFSET);
+            break;
+        case 225:
+            robot.setDriveDirection(0.625 + OFFSET);
+            break;
+        case 270:
+            robot.setDriveDirection(0.75 + OFFSET);
+            break;
+        case 315:
+            robot.setDriveDirection(0.875 + OFFSET);
+            break;
+    
+        default:
+            break;
+    }
+    //moduleFL.TurnTo(controller.getRawAxis(1));
+    robot.setDriveDirection(-joysticks.getRawAxis(0));
+    robot.setSpeed((joysticks.getRawAxis(3)-joysticks.getRawAxis(2))/5);
+    robot.setTurn(joysticks.getRawAxis(4));
+    double coder1reading = coder1.getPosition().getValueAsDouble();
+    double coder3reading = coder3.getPosition().getValueAsDouble();
   }
 
   @Override
