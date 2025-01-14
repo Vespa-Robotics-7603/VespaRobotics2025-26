@@ -14,9 +14,9 @@ public class DriveTrain {
     }
     public void setDriveDirection(double angle){
         module1.TurnTo(angle+turn);
-        module2.TurnTo(angle-turn);
+        module2.TurnTo(angle+turn);
         module3.TurnTo(angle-turn);
-        module4.TurnTo(angle+turn);
+        module4.TurnTo(angle-turn);
     }
     public void setSpeed(double speed){
         module1.setDriveSpeed(speed);
