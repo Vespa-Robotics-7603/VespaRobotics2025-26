@@ -22,13 +22,13 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-  
+  final double OFFSET = 0.350;
   CANcoder coder1 = new CANcoder(1);
   CANcoder coder3 = new CANcoder(3);
-  SwerveModule moduleFL = new SwerveModule(new TalonFX(10),new TalonFX(11),new CANcoder(1),0.350,-1);
-  SwerveModule moduleFR = new SwerveModule(new TalonFX(40),new TalonFX(41),new CANcoder(4),0.350,1);
-  SwerveModule moduleBL = new SwerveModule(new TalonFX(20),new TalonFX(21),new CANcoder(2),0.350,-1);
-  SwerveModule moduleBR = new SwerveModule(new TalonFX(30),new TalonFX(31),new CANcoder(3),0.350,1);
+  SwerveModule moduleFL = new SwerveModule(new TalonFX(10),new TalonFX(11),new CANcoder(1),OFFSET,-1);
+  SwerveModule moduleFR = new SwerveModule(new TalonFX(40),new TalonFX(41),new CANcoder(4),OFFSET,1);
+  SwerveModule moduleBL = new SwerveModule(new TalonFX(20),new TalonFX(21),new CANcoder(2),OFFSET,-1);
+  SwerveModule moduleBR = new SwerveModule(new TalonFX(30),new TalonFX(31),new CANcoder(3),OFFSET,1);
   DriveTrain robot = new DriveTrain(moduleFL,moduleFR,moduleBL,moduleBR);
   XboxController joysticks = new XboxController(0);
   @Override
