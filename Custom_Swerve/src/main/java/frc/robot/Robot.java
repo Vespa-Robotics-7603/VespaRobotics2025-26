@@ -22,6 +22,7 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+  
   CANcoder coder1 = new CANcoder(1);
   CANcoder coder3 = new CANcoder(3);
   SwerveModule moduleFL = new SwerveModule(new TalonFX(10),new TalonFX(11),new CANcoder(1),0.350,-1);
@@ -55,6 +56,7 @@ public class Robot extends TimedRobot {
       //moduleFL.TurnTo(controller.getRawAxis(1));
       robot.setDriveDirection(-joysticks.getRawAxis(0));
       robot.setSpeed((joysticks.getRawAxis(3)-joysticks.getRawAxis(2))/5);
+      robot.setTurn(joysticks.getRawAxis(4)/8);
       double coder1reading = coder1.getPosition().getValueAsDouble();
       double coder3reading = coder3.getPosition().getValueAsDouble();
   }
