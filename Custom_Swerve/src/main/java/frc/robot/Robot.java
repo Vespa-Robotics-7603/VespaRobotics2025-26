@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
       //moduleFL.TurnTo(controller.getRawAxis(1));
       robot.setDriveDirection(-joysticks.getRawAxis(0));
       robot.setSpeed((joysticks.getRawAxis(3)-joysticks.getRawAxis(2))/5);
-      robot.setTurn(joysticks.getRawAxis(4)/4);
+      robot.setTurn(joysticks.getRawAxis(4));
       double coder1reading = coder1.getPosition().getValueAsDouble();
       double coder3reading = coder3.getPosition().getValueAsDouble();
   }
