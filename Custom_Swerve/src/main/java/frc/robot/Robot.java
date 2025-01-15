@@ -4,10 +4,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -23,23 +21,22 @@ public class Robot extends TimedRobot {
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
      */
-    final double OFFSET = 0.350;
-    CANcoder coder1 = new CANcoder(1);
-    CANcoder coder3 = new CANcoder(3);
+    final static double OFFSET = 0.350;
+
+    static CANcoder coder1 = new CANcoder(1);
+    static CANcoder coder3 = new CANcoder(3);
+    static XboxController joysticks = new XboxController(0);
+    
     SwerveModule moduleFL = new SwerveModule(new TalonFX(10),new TalonFX(11),new CANcoder(1),OFFSET,-1);
     SwerveModule moduleFR = new SwerveModule(new TalonFX(40),new TalonFX(41),new CANcoder(4),OFFSET,1);
     SwerveModule moduleBL = new SwerveModule(new TalonFX(20),new TalonFX(21),new CANcoder(2),OFFSET,-1);
     SwerveModule moduleBR = new SwerveModule(new TalonFX(30),new TalonFX(31),new CANcoder(3),OFFSET,1);
+    
     DriveTrain robot = new DriveTrain(moduleFL,moduleFR,moduleBL,moduleBR);
-    XboxController joysticks = new XboxController(0);
+    
     @Override
-    public void robotInit(){
-        // TalonFX testMotor = new TalonFX(10);
-        
-    }
-    public Robot() {
- 
-    }
+    public void robotInit() {}
+    public Robot() {}
     
     @Override
     public void robotPeriodic() {}
@@ -51,49 +48,34 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {}
 
     @Override
-    public void teleopInit() {
-    }
+    public void teleopInit() {}
+
     @Override
     public void teleopPeriodic() {
-        // for d-pad use
+        robot.setSpeed((joysticks.getRawAxis(3)-joysticks.getRawAxis(2))/5);
+        // triggers to control speed
+
         switch (joysticks.getPOV()) {
+            // gets dpad, counts 0 -> 315 degrees clockwise, returns -1 when not pressed
             case 0:
-                robot.setDriveDirection(OFFSET);
-                break;
-            case 45:
-                robot.setDriveDirection(0.125 + OFFSET);
+                robot.setDriveDirection(0); // up on dpad
                 break;
             case 90:
-                robot.setDriveDirection(0.25 + OFFSET);
-                break;
-            case 135:
-                robot.setDriveDirection(0.375 + OFFSET);
+                robot.setDriveDirection(0.25); // right on dpad
                 break;
             case 180:
-                robot.setDriveDirection(0.5 + OFFSET);
-                break;
-            case 225:
-                robot.setDriveDirection(0.625 + OFFSET);
+                robot.setDriveDirection(0.75); // down on dpad
                 break;
             case 270:
-                robot.setDriveDirection(0.75 + OFFSET);
+                robot.setDriveDirection(1); // left on dpad
                 break;
-            case 315:
-                robot.setDriveDirection(0.875 + OFFSET);
-                break;
-            default:
-                //moduleFL.TurnTo(controller.getRawAxis(1));
+            case -1:
+                // else: run left stick and right stick movement
                 robot.setDriveDirection(-joysticks.getRawAxis(0));
-                robot.setSpeed((joysticks.getRawAxis(3)-joysticks.getRawAxis(2))/5);
                 robot.setTurn(joysticks.getRawAxis(4));
-                double coder1reading = coder1.getPosition().getValueAsDouble();
-                double coder3reading = coder3.getPosition().getValueAsDouble();
                 break;
         }
-        //moduleFL.TurnTo(controller.getRawAxis(1));
-        // robot.setDriveDirection(-joysticks.getRawAxis(0));
-        // robot.setSpeed((joysticks.getRawAxis(3)-joysticks.getRawAxis(2))/5);
-        // robot.setTurn(joysticks.getRawAxis(4));
+
         // double coder1reading = coder1.getPosition().getValueAsDouble();
         // double coder3reading = coder3.getPosition().getValueAsDouble();
     }
