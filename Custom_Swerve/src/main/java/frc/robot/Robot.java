@@ -31,10 +31,10 @@ public class Robot extends TimedRobot {
     
     SwerveModule moduleFL = new SwerveModule(new TalonFX(10),new TalonFX(11),new CANcoder(1),OFFSET,-1);
     SwerveModule moduleFR = new SwerveModule(new TalonFX(40),new TalonFX(41),new CANcoder(4),OFFSET,1);
-    SwerveModule moduleBL = new SwerveModule(new TalonFX(20),new TalonFX(21),new CANcoder(2),OFFSET,-1);
-    SwerveModule moduleBR = new SwerveModule(new TalonFX(30),new TalonFX(31),new CANcoder(3),OFFSET,1);
+    SwerveModule moduleRL = new SwerveModule(new TalonFX(20),new TalonFX(21),new CANcoder(2),OFFSET,-1);
+    SwerveModule moduleRR = new SwerveModule(new TalonFX(30),new TalonFX(31),new CANcoder(3),OFFSET,1);
     
-    DriveTrain robot = new DriveTrain(moduleFL,moduleFR,moduleBL,moduleBR);
+    DriveTrain robot = new DriveTrain(moduleFL,moduleFR,moduleRL,moduleRR);
     
     @Override
     public void robotInit() {}
@@ -74,7 +74,7 @@ public class Robot extends TimedRobot {
             case -1:
                 // else: run left stick and right stick movement
                 robot.setDriveDirection(-joysticks.getRawAxis(0));
-                robot.setTurn(joysticks.getRawAxis(4));
+                robot.setTurn(-joysticks.getRawAxis(4));
                 break;
         }
 
