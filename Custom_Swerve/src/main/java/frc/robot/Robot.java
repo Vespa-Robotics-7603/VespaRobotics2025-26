@@ -98,11 +98,16 @@ public class Robot extends TimedRobot {
         double upDown = -joysticks.getRawAxis(1);
         double speed;
         //speed = getPolarSqr(-joysticks.getRawAxis(0), upDown)[0] * Math.signum(upDown);
-        speed = Math.abs(-joysticks.getRawAxis(0)) + Math.abs(joysticks.getRawAxis(1)) * Math.signum(joysticks.getRawAxis(1));
-        robot.setSpeed(-speed/5);
-        robot.setDriveDirection(-joysticks.getRawAxis(0));
-        //robot.setTurn(-joysticks.getRawAxis(4));
-d        // triggers to control speed
+        speed = -Math.abs((joysticks.getRawAxis(0)) + (joysticks.getRawAxis(1)))*Math.signum(joysticks.getRawAxis(1));
+        if(speed >= 0.9){
+            speed = 1;
+        } else if (speed <= -0.9){
+            speed = -1;
+        }
+        robot.setSpeed(speed/5);
+        robot.setDriveDirection(-joysticks.getRawAxis(0)*Math.signum(-joysticks.getRawAxis(1)));
+        robot.setTurn(-joysticks.getRawAxis(4)/2);
+        // triggers to control speed
 
         // switch (joysticks.getPOV()) {
         //     // gets dpad, counts 0 -> 315 degrees clockwise, returns -1 when not pressed
