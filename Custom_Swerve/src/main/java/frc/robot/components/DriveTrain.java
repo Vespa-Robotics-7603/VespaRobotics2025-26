@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.components;
 
 public class DriveTrain {
     SwerveModule module1;
@@ -6,7 +6,7 @@ public class DriveTrain {
     SwerveModule module3;
     SwerveModule module4;
     double turn = 0;
-    DriveTrain(SwerveModule ... modules){
+    public DriveTrain(SwerveModule ... modules){
         module1 = modules[0];
         module2 = modules[1];
         module3 = modules[2];
