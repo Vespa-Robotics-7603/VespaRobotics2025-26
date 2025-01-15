@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.components.DriveTrain;
@@ -95,11 +96,13 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         double upDown = -joysticks.getRawAxis(1);
-        double speed = getPolarSqr(-joysticks.getRawAxis(0), upDown)[0] * Math.signum(upDown);
-        robot.setSpeed(-(joysticks.getRawAxis(0)+joysticks.getRawAxis(1))/5);
-        robot.setDriveDirection(joysticks.getRawAxis(0)*2);
-        robot.setTurn(-joysticks.getRawAxis(4));
-        // triggers to control speed
+        double speed;
+        //speed = getPolarSqr(-joysticks.getRawAxis(0), upDown)[0] * Math.signum(upDown);
+        speed = Math.abs(-joysticks.getRawAxis(0)) + Math.abs(joysticks.getRawAxis(1)) * Math.signum(joysticks.getRawAxis(1));
+        robot.setSpeed(-speed/5);
+        robot.setDriveDirection(-joysticks.getRawAxis(0));
+        //robot.setTurn(-joysticks.getRawAxis(4));
+d        // triggers to control speed
 
         // switch (joysticks.getPOV()) {
         //     // gets dpad, counts 0 -> 315 degrees clockwise, returns -1 when not pressed
