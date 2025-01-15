@@ -54,29 +54,29 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        robot.setSpeed((joysticks.getRawAxis(3)-joysticks.getRawAxis(2))/5);
+        robot.setSpeed(-(joysticks.getRawAxis(0)+joysticks.getRawAxis(1))/5);
+        robot.setDriveDirection(joysticks.getRawAxis(0)*2);
+        robot.setTurn(-joysticks.getRawAxis(4));
         // triggers to control speed
 
-        switch (joysticks.getPOV()) {
-            // gets dpad, counts 0 -> 315 degrees clockwise, returns -1 when not pressed
-            case 0:
-                robot.setDriveDirection(0); // up on dpad
-                break;
-            case 90:
-                robot.setDriveDirection(0.25); // right on dpad
-                break;
-            case 180:
-                robot.setDriveDirection(0.75); // down on dpad
-                break;
-            case 270:
-                robot.setDriveDirection(1); // left on dpad
-                break;
-            case -1:
-                // else: run left stick and right stick movement
-                robot.setDriveDirection(-joysticks.getRawAxis(0));
-                robot.setTurn(-joysticks.getRawAxis(4));
-                break;
-        }
+        // switch (joysticks.getPOV()) {
+        //     // gets dpad, counts 0 -> 315 degrees clockwise, returns -1 when not pressed
+        //     case 0:
+        //         robot.setDriveDirection(0); // up on dpad
+        //         break;
+        //     case 90:
+        //         robot.setDriveDirection(0.25); // right on dpad
+        //         break;
+        //     case 180:
+        //         robot.setDriveDirection(0.75); // down on dpad
+        //         break;
+        //     case 270:
+        //         robot.setDriveDirection(1); // left on dpad
+        //         break;
+        //     case -1:
+        //         // else: run left stick and right stick movement
+        //         break;
+        // }
 
         // double coder1reading = coder1.getPosition().getValueAsDouble();
         // double coder3reading = coder3.getPosition().getValueAsDouble();
