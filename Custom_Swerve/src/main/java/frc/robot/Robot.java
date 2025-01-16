@@ -4,14 +4,10 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.components.DriveTrain;
-import frc.robot.components.SwerveModule;
 
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.TalonFX;
+import frc.robot.components.Constants;
+import frc.robot.components.DriveTrain;
 
 
 /**
@@ -24,18 +20,14 @@ public class Robot extends TimedRobot {
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
      */
-    final static double OFFSET = 0.350;
+    double speed;
 
-    static CANcoder coder1 = new CANcoder(1);
-    static CANcoder coder3 = new CANcoder(3);
-    static XboxController joysticks = new XboxController(0);
-    
-    SwerveModule moduleFL = new SwerveModule(new TalonFX(10),new TalonFX(11),new CANcoder(1),OFFSET,-1);
-    SwerveModule moduleFR = new SwerveModule(new TalonFX(40),new TalonFX(41),new CANcoder(4),OFFSET,1);
-    SwerveModule moduleRL = new SwerveModule(new TalonFX(20),new TalonFX(21),new CANcoder(2),OFFSET,-1);
-    SwerveModule moduleRR = new SwerveModule(new TalonFX(30),new TalonFX(31),new CANcoder(3),OFFSET,1);
-    
-    DriveTrain robot = new DriveTrain(moduleFL,moduleFR,moduleRL,moduleRR);
+    DriveTrain robot = new DriveTrain(
+        Constants.moduleFL, // Front Left -> 10 & 11, CANcoder ID: 1
+        Constants.moduleFR, // Front Right -> 40 & 41, CANcoder ID: 4
+        Constants.moduleRL, // Rear Left -> 20 & 21, CANcoder ID: 2
+        Constants.moduleRR  // Rear Right -> 30 & 31, CANcoder ID: 3
+    );
 
     public static double[] getPolarSqr(double xPos, double yPos){
         /*
@@ -95,21 +87,19 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        double upDown = -joysticks.getRawAxis(1);
-        double speed;
-        //speed = getPolarSqr(-joysticks.getRawAxis(0), upDown)[0] * Math.signum(upDown);
-        speed = -Math.abs((joysticks.getRawAxis(0)) + (joysticks.getRawAxis(1)))*Math.signum(joysticks.getRawAxis(1));
+        //speed = getPolarSqr(-Constants.JOYSTICKS.getRawAxis(0), Constants.VERTICAL_MOVEMENT)[0] * Math.signum(Constants.VERTICAL_MOVEMENT);
+        speed = -Math.abs((Constants.JOYSTICKS.getRawAxis(0)) + (Constants.JOYSTICKS.getRawAxis(1)))*Math.signum(Constants.JOYSTICKS.getRawAxis(1));
         if(speed >= 0.9){
             speed = 1;
         } else if (speed <= -0.9){
             speed = -1;
         }
         robot.setSpeed(speed/5);
-        robot.setDriveDirection(-joysticks.getRawAxis(0)*Math.signum(-joysticks.getRawAxis(1)));
-        robot.setTurn(-joysticks.getRawAxis(4)/2);
+        robot.setDriveDirection(-Constants.JOYSTICKS.getRawAxis(0)*Math.signum(-Constants.JOYSTICKS.getRawAxis(1)));
+        robot.setTurn(-Constants.JOYSTICKS.getRawAxis(4)/2);
         // triggers to control speed
 
-        // switch (joysticks.getPOV()) {
+        // switch (Constants.JOYSTICKS.getPOV()) {
         //     // gets dpad, counts 0 -> 315 degrees clockwise, returns -1 when not pressed
         //     case 0:
         //         robot.setDriveDirection(0); // up on dpad
