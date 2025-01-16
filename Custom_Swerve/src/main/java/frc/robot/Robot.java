@@ -4,10 +4,10 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
+import com.ctre.phoenix6.hardware.CANcoder;
 
+import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.components.Constants;
-import frc.robot.components.DriveTrain;
 
 
 /**
@@ -16,18 +16,14 @@ import frc.robot.components.DriveTrain;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
-    /**
-     * This function is run when the robot is first started up and should be used for any
-     * initialization code.
-     */
-    double speed;
 
-    DriveTrain robot = new DriveTrain(
-        Constants.moduleFL, // Front Left -> 10 & 11, CANcoder ID: 1
-        Constants.moduleFR, // Front Right -> 40 & 41, CANcoder ID: 4
-        Constants.moduleRL, // Rear Left -> 20 & 21, CANcoder ID: 2
-        Constants.moduleRR  // Rear Right -> 30 & 31, CANcoder ID: 3
-    );
+    // CANcoders / "potentiometers"
+    public static CANcoder coder1 = new CANcoder(1);
+    public static CANcoder coder2 = new CANcoder(2);
+    public static CANcoder coder3 = new CANcoder(3);
+    public static CANcoder coder4 = new CANcoder(4);
+
+    double speed;
 
     public static double[] getPolarSqr(double xPos, double yPos){
         /*
@@ -69,6 +65,10 @@ public class Robot extends TimedRobot {
         return polarCoords;
     }
     
+    /**
+     * This function is run when the Constants.ROBOT is first started up and should be used for any
+     * initialization code.
+     */
     @Override
     public void robotInit() {}
     public Robot() {}
@@ -87,39 +87,17 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        //speed = getPolarSqr(-Constants.JOYSTICKS.getRawAxis(0), Constants.VERTICAL_MOVEMENT)[0] * Math.signum(Constants.VERTICAL_MOVEMENT);
-        speed = -Math.abs((Constants.JOYSTICKS.getRawAxis(0)) + (Constants.JOYSTICKS.getRawAxis(1)))*Math.signum(Constants.JOYSTICKS.getRawAxis(1));
+        // if (Constants.RIGHT_TRIGGER<Constants.TRIGGER_DEADZONE)
+        // speed = getPolarSqr(-Constants.X_AXIS_LEFT_STICK, Constants.Y_AXIS_LEFT_STICK)[0] * Math.signum(Constants.Y_AXIS_LEFT_STICK);
+        this.speed = -Math.abs((Constants.X_AXIS_LEFT_STICK) + (Constants.Y_AXIS_LEFT_STICK))*Math.signum(Constants.Y_AXIS_LEFT_STICK);
         if(speed >= 0.9){
             speed = 1;
         } else if (speed <= -0.9){
             speed = -1;
         }
-        robot.setSpeed(speed/5);
-        robot.setDriveDirection(-Constants.JOYSTICKS.getRawAxis(0)*Math.signum(-Constants.JOYSTICKS.getRawAxis(1)));
-        robot.setTurn(-Constants.JOYSTICKS.getRawAxis(4)/2);
-        // triggers to control speed
-
-        // switch (Constants.JOYSTICKS.getPOV()) {
-        //     // gets dpad, counts 0 -> 315 degrees clockwise, returns -1 when not pressed
-        //     case 0:
-        //         robot.setDriveDirection(0); // up on dpad
-        //         break;
-        //     case 90:
-        //         robot.setDriveDirection(0.25); // right on dpad
-        //         break;
-        //     case 180:
-        //         robot.setDriveDirection(0.75); // down on dpad
-        //         break;
-        //     case 270:
-        //         robot.setDriveDirection(1); // left on dpad
-        //         break;
-        //     case -1:
-        //         // else: run left stick and right stick movement
-        //         break;
-        // }
-
-        // double coder1reading = coder1.getPosition().getValueAsDouble();
-        // double coder3reading = coder3.getPosition().getValueAsDouble();
+        Constants.ROBOT.setSpeed(speed/5);
+        Constants.ROBOT.setDriveDirection(-Constants.X_AXIS_LEFT_STICK*Math.signum(-Constants.Y_AXIS_LEFT_STICK));
+        Constants.ROBOT.setTurn(-Constants.X_AXIS_RIGHT_STICK/2);
     }
 
     @Override
