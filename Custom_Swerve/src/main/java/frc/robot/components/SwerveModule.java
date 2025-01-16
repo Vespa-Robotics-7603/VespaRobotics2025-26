@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.components;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -6,21 +6,16 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
-
-
-
 public class SwerveModule {
     private TalonFX driveMotor;
     private TalonFX turnMotor;
     private CANcoder coder;
-    private double offset;
     private double direction;
     Slot0Configs pidConfigs = new Slot0Configs();
-    SwerveModule(TalonFX driveMotor, TalonFX turnMotor, CANcoder coder, double offset, double direction){
+    public SwerveModule(TalonFX driveMotor, TalonFX turnMotor, CANcoder coder, double direction){
         this.driveMotor = driveMotor;
         this.turnMotor = turnMotor;
         this.coder = coder;
-        this.offset = offset;
         this.direction = direction;
 
         //These slot configs are copied from the pheonix 6 documentation and should be
@@ -49,7 +44,7 @@ public class SwerveModule {
         //and turns to motor too it
         TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(100, 200));
         //create the state in which you want it to end up
-        TrapezoidProfile.State goal = new TrapezoidProfile.State(rotations/4 + offset,2);
+        TrapezoidProfile.State goal = new TrapezoidProfile.State(rotations/4 + Constants.OFFSET,2);
         //create the state in which it is currently
         TrapezoidProfile.State setPoint = new TrapezoidProfile.State();
         //calculate how to get from the current state to the final goal state

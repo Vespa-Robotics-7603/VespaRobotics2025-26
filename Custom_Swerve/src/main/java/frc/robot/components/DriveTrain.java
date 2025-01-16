@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.components;
 
 public class DriveTrain {
     SwerveModule module1;
@@ -6,7 +6,7 @@ public class DriveTrain {
     SwerveModule module3;
     SwerveModule module4;
     double turn = 0;
-    DriveTrain(SwerveModule ... modules){
+    public DriveTrain(SwerveModule ... modules){
         module1 = modules[0];
         module2 = modules[1];
         module3 = modules[2];
@@ -14,9 +14,9 @@ public class DriveTrain {
     }
     public void setDriveDirection(double angle){
         module1.TurnTo(angle+turn);
-        module2.TurnTo(angle-turn);
+        module2.TurnTo(angle+turn);
         module3.TurnTo(angle-turn);
-        module4.TurnTo(angle+turn);
+        module4.TurnTo(angle-turn);
     }
     public void setSpeed(double speed){
         module1.setDriveSpeed(speed);
