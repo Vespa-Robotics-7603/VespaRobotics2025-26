@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
         // ang is in rad, need it in deg
         ang = Math.toDegrees(ang);
 
-        double[] polarCoords = {hyp*squareRad, ang};
+        double[] polarCoords = {hyp/*squareRad*/, ang};
         //System.out.println(polarCoords[0]);
         return polarCoords;
     }
