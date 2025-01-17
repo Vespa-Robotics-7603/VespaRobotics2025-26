@@ -12,8 +12,8 @@ public class Constants {
     // common constants
     public static final double OFFSET = 0.350;
     public static final byte PORT = 0;
-    public static final double STICK_DEADZONE_POSITIVE = 0.9;
-    public static final double STICK_DEADZONE_NEGATIVE = -0.9;
+    public static final double STICK_DEADZONE_POSITIVE = 0.1;
+    public static final double STICK_DEADZONE_NEGATIVE = -0.1;
     public static final double TRIGGER_DEADZONE = 0.15;
 
     // controller 

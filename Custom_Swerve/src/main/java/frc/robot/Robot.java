@@ -8,6 +8,8 @@ import com.ctre.phoenix6.hardware.CANcoder;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.components.Constants;
+import edu.wpi.first.wpilibj.XboxController;
+
 
 
 /**
@@ -22,6 +24,8 @@ public class Robot extends TimedRobot {
     public static CANcoder coder2 = new CANcoder(2);
     public static CANcoder coder3 = new CANcoder(3);
     public static CANcoder coder4 = new CANcoder(4);
+
+    XboxController joysticks = new XboxController(0);    
 
     double speed;
 
@@ -88,16 +92,16 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         // if (Constants.RIGHT_TRIGGER<Constants.TRIGGER_DEADZONE)
-        // speed = getPolarSqr(-Constants.X_AXIS_LEFT_STICK, Constants.Y_AXIS_LEFT_STICK)[0] * Math.signum(Constants.Y_AXIS_LEFT_STICK);
-        this.speed = -Math.abs((Constants.X_AXIS_LEFT_STICK) + (Constants.Y_AXIS_LEFT_STICK))*Math.signum(Constants.Y_AXIS_LEFT_STICK);
+        // speed = getPolarSqr(-joysticks.getRawAxis(0), joysticks.getRawAxis(1))[0] * Math.signum(joysticks.getRawAxis(1));
+        this.speed = -Math.abs((joysticks.getRawAxis(0)) + (joysticks.getRawAxis(1)))*Math.signum(joysticks.getRawAxis(1));
         if(speed >= 0.9){
             speed = 1;
         } else if (speed <= -0.9){
             speed = -1;
         }
         Constants.ROBOT.setSpeed(speed/5);
-        Constants.ROBOT.setDriveDirection(-Constants.X_AXIS_LEFT_STICK*Math.signum(-Constants.Y_AXIS_LEFT_STICK));
-        Constants.ROBOT.setTurn(-Constants.X_AXIS_RIGHT_STICK/2);
+        Constants.ROBOT.setDriveDirection(-joysticks.getRawAxis(0)*Math.signum(-joysticks.getRawAxis(1)));
+        Constants.ROBOT.setTurn(-joysticks.getRawAxis(4)/2);
     }
 
     @Override
