@@ -10,23 +10,25 @@ public class Constants {
     private Constants() {} 
 
     // common constants
+
     public static final double OFFSET = 0.350;
     public static final byte PORT = 0;
     public static final double STICK_DEADZONE_POSITIVE = 0.1;
     public static final double STICK_DEADZONE_NEGATIVE = -0.1;
     public static final double TRIGGER_DEADZONE = 0.15;
 
-    // controller 
+
+    // controller - DOESNT WORK, NOT CONSTANTS
     public static final XboxController JOYSTICKS = new XboxController(PORT);
 
-    public static final double X_AXIS_LEFT_STICK = JOYSTICKS.getRawAxis(0);
-    public static final double Y_AXIS_LEFT_STICK = JOYSTICKS.getRawAxis(1);
+    // public static final double X_AXIS_LEFT_STICK = JOYSTICKS.getRawAxis(0);
+    // public static final double Y_AXIS_LEFT_STICK = JOYSTICKS.getRawAxis(1);
 
-    public static final double LEFT_TRIGGER = JOYSTICKS.getRawAxis(2);
-    public static final double RIGHT_TRIGGER = JOYSTICKS.getRawAxis(3);
+    // public static final double LEFT_TRIGGER = JOYSTICKS.getRawAxis(2);
+    // public static final double RIGHT_TRIGGER = JOYSTICKS.getRawAxis(3);
 
-    public static final double X_AXIS_RIGHT_STICK = JOYSTICKS.getRawAxis(4);
-    public static final double Y_AXIS_RIGHT_STICK = JOYSTICKS.getRawAxis(5);
+    // public static final double X_AXIS_RIGHT_STICK = JOYSTICKS.getRawAxis(4);
+    // public static final double Y_AXIS_RIGHT_STICK = JOYSTICKS.getRawAxis(5);
 
 
     // modules -> Front Left, Front Right, Rear Left, Rear Right.
@@ -43,10 +45,10 @@ public class Constants {
      * </ul>
      */
     public static final DriveTrain ROBOT = new DriveTrain(
-        Constants.MODULE_FL,
-        Constants.MODULE_FR,
-        Constants.MODULE_RL,
-        Constants.MODULE_RR 
+        MODULE_FL,
+        MODULE_FR,
+        MODULE_RL,
+        MODULE_RR 
     );
 
 }

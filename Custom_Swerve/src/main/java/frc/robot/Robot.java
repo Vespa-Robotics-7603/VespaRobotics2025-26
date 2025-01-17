@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
         // ang is in rad, need it in deg
         ang = Math.toDegrees(ang);
 
-        double[] polarCoords = {hyp*squareRad, ang};
+        double[] polarCoords = {hyp/*squareRad*/, ang};
         //System.out.println(polarCoords[0]);
         return polarCoords;
     }
@@ -92,16 +92,18 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         // if (Constants.RIGHT_TRIGGER<Constants.TRIGGER_DEADZONE)
-        // speed = getPolarSqr(-joysticks.getRawAxis(0), joysticks.getRawAxis(1))[0] * Math.signum(joysticks.getRawAxis(1));
-        this.speed = -Math.abs((joysticks.getRawAxis(0)) + (joysticks.getRawAxis(1)))*Math.signum(joysticks.getRawAxis(1));
+
+        // speed = getPolarSqr(-Constants.JOYSTICKS.getRawAxis(0), Constants.JOYSTICKS.getRawAxis(1))[0] * Math.signum(Constants.JOYSTICKS.getRawAxis(1));
+        this.speed = -Math.abs((Constants.JOYSTICKS.getRawAxis(0)) + (Constants.JOYSTICKS.getRawAxis(1)))*Math.signum(Constants.JOYSTICKS.getRawAxis(1));
+
         if(speed >= 0.9){
             speed = 1;
         } else if (speed <= -0.9){
             speed = -1;
         }
         Constants.ROBOT.setSpeed(speed/5);
-        Constants.ROBOT.setDriveDirection(-joysticks.getRawAxis(0)*Math.signum(-joysticks.getRawAxis(1)));
-        Constants.ROBOT.setTurn(-joysticks.getRawAxis(4)/2);
+        Constants.ROBOT.setDriveDirection(-Constants.JOYSTICKS.getRawAxis(0)*Math.signum(-Constants.JOYSTICKS.getRawAxis(1)));
+        Constants.ROBOT.setTurn(-Constants.JOYSTICKS.getRawAxis(4)/2);
     }
 
     @Override
