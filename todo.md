@@ -16,3 +16,6 @@ this will be all lees issues he still needs to fix
     so that may be causing it to under/overshoot or turn too fast
 
 4. pid constant
+
+5. test and debug new swerve methods
+    the constants and logic of the new methods need testing (like turnWheelsTo namely)

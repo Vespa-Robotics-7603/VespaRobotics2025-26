@@ -32,10 +32,14 @@ public class Constants {
 
 
     // modules -> Front Left, Front Right, Rear Left, Rear Right.
-    public static final SwerveModule MODULE_FL = new SwerveModule(new TalonFX(10),new TalonFX(11),new CANcoder(1),-1);
-    public static final SwerveModule MODULE_FR = new SwerveModule(new TalonFX(40),new TalonFX(41),new CANcoder(4),1);
-    public static final SwerveModule MODULE_RL = new SwerveModule(new TalonFX(20),new TalonFX(21),new CANcoder(2),-1);
-    public static final SwerveModule MODULE_RR = new SwerveModule(new TalonFX(30),new TalonFX(31),new CANcoder(3),1);
+    public static final SwerveModule MODULE_FL = new SwerveModule(new TalonFX(10),new TalonFX(11),new CANcoder(1),-1,
+    SetupConstants.FrontLeft);
+    public static final SwerveModule MODULE_FR = new SwerveModule(new TalonFX(40),new TalonFX(41),new CANcoder(4),1, 
+    SetupConstants.FrontRight);
+    public static final SwerveModule MODULE_RL = new SwerveModule(new TalonFX(20),new TalonFX(21),new CANcoder(2),-1, 
+    SetupConstants.BackLeft);
+    public static final SwerveModule MODULE_RR = new SwerveModule(new TalonFX(30),new TalonFX(31),new CANcoder(3),1, 
+    SetupConstants.BackRight);
     /**
      * <ul>
      * <li>Front Left -> 10 & 11, CANcoder ID: 1
