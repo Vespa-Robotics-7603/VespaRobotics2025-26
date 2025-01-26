@@ -14,3 +14,5 @@ this will be all lees issues he still needs to fix
 3. fix pid thing going from 0 to position in 2 seconds
     the current motor turning speed is always assumed to be 0
     so that may be causing it to under/overshoot or turn too fast
+
+4. pid constant
