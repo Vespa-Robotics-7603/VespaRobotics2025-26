@@ -54,7 +54,12 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    SwerveDriveState state = m_robotContainer.drivetrain.getState();
+    System.out.println("Pose x, y");
+    System.out.println(state.Pose.getX()); 
+    System.out.println(state.Pose.getY());
+  }
 
   @Override
   public void teleopExit() {}
