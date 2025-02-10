@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,6 +22,8 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private SlewRateLimiter Xfilter = new SlewRateLimiter(10);
+    private SlewRateLimiter Yfilter = new SlewRateLimiter(10);
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -43,12 +46,13 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                drive.withVelocityX(Xfilter.calculate(joystick.getLeftY() * MaxSpeed)) // Drive forward with negative Y (forward)
+                    .withVelocityY(Yfilter.calculate(joystick.getLeftX() * MaxSpeed)) // Drive left with negative X (left)
                     .withRotationalRate(joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
