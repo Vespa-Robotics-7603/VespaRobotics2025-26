@@ -1,6 +1,3 @@
-### Note: This is the experimental branch, which means these codes are not yet field-tested to be stable enough for competition.
-### Go to the branch `main-code` for the actual code
-
 # Welcome to the VespaRobotics 2024/2025 Repository!
 
 ## Intro
