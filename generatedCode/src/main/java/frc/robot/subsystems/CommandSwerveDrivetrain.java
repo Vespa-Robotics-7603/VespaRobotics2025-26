@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -132,6 +131,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        initalizeAutoBuilder();
+
     }
 
     /**
@@ -156,6 +157,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        initalizeAutoBuilder();
+
     }
 
     /**
@@ -192,18 +195,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     private void initalizeAutoBuilder(){
-        RobotConfig config = null;
+        RobotConfig config;
     
         try{
             config = RobotConfig.fromGUISettings();
-        } catch (Exception e) {
-        // Handle exception as needed
-        e.printStackTrace();
-        }
-        SwerveRequest.ApplyRobotSpeeds AutoRequest = new SwerveRequest.ApplyRobotSpeeds();
+            SwerveRequest.ApplyRobotSpeeds AutoRequest = new SwerveRequest.ApplyRobotSpeeds();
 
-        // Configure AutoBuilder last
-        AutoBuilder.configure(
+            // Configure AutoBuilder last
+            AutoBuilder.configure(
                 this::getPose, // Robot pose supplier
                 this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
@@ -225,8 +224,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 return false;
                 },
                 this // Reference to this subsystem to set requirements
-        );
+            );
+        } catch (Exception e) {
+            // Handle exception as needed
+            e.printStackTrace();
+        }
+
     }
+        
 
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
