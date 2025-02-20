@@ -1,0 +1,519 @@
+package frc.robot;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.TimedRobot;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import edu.wpi.first.wpilibj.Timer;
+
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+
+// import org.photonvision.*;
+// import org.photonvision.targeting.PhotonPipelineResult;
+public class Robot extends TimedRobot
+{
+    // PhotonPipelineResult position = new PhotonPipelineResult();
+	private VictorSPX driveLeft1 = new VictorSPX(1);
+	private VictorSPX driveRight1 = new VictorSPX(3);
+	private VictorSPX driveLeft2 = new VictorSPX(2);
+    private VictorSPX driveRight2 = new VictorSPX(4);
+	private Joystick newJoystick = new Joystick(0);
+	CANSparkMax climbMotor = new CANSparkMax(1, MotorType.kBrushless);
+	CANSparkMax bottomShooter = new CANSparkMax(3, MotorType.kBrushed);
+	CANSparkMax topShooter = new CANSparkMax(4, MotorType.kBrushed);
+
+	Timer autoTimer = new Timer();
+
+    boolean alignedRun = false;
+    double alignToAngle = 0;
+
+    ADXRS450_Gyro gyro = new ADXRS450_Gyro();
+
+    int alignShuffleState = 0;
+    boolean alignShuffleRun = false;
+    double alignSInitial = 0;
+    double alignSTime = 0;
+    Timer alignSTimer = new Timer();
+
+    Timer shooterTimer = new Timer();
+    boolean hasShot = false;
+
+    double CamFOV = 3; // camera fov limit in degrees
+
+
+	public void driveRobot(double leftspeed, double rightspeed)
+	{
+		if (leftspeed > 1) leftspeed = 1;
+		if (rightspeed > 1) rightspeed = 1;
+		if (leftspeed < -1) leftspeed = -1;
+		if (rightspeed < -1) rightspeed = -1;
+
+		driveLeft1.set(ControlMode.PercentOutput, leftspeed);
+		driveLeft2.set(ControlMode.PercentOutput, leftspeed);
+		driveRight2.set(ControlMode.PercentOutput, rightspeed);
+		driveRight1.set(ControlMode.PercentOutput, rightspeed);
+
+		return;
+	}
+
+    public void revShooter(double speed){
+        if(speed > 1 || speed < -1) speed = Math.signum(speed);
+        topShooter.set(speed);
+    }
+    public void shootShooter(double speed){
+        if(speed > 1 || speed < -1) speed = Math.signum(speed);
+        topShooter.set(speed);
+        bottomShooter.set(speed);
+    }
+
+	public void tank(double LMS, double RMS){
+        // change format for motor controler
+        //double offset = 0.04 - (LMS/25);
+        //System.out.println("tanking");
+        /* leftMotor1.set(ControlMode.PercentOutput, LMS );
+        leftMotor2.set(ControlMode.PercentOutput, LMS );
+
+        rightMotor1.set(ControlMode.PercentOutput, -RMS);
+        rightMotor2.set(ControlMode.PercentOutput, -RMS); */
+        driveRobot(LMS, -RMS);
+    }
+    public void arcade(double Speed, double turnAng){
+        // speed - sin turn ?
+        // turn rad
+        // neg turn ang left, pos right, 0 no turn
+        /*
+        * need width of robot(dist from centre to wheels)?
+        * 
+        * inner circ/outer
+        */
+        //turnAng *= -1; // just in case
+        System.out.println(turnAng);
+        double Ls = 1;
+        double Rs = 1;
+        if (turnAng < 0){
+            //turn left
+            // left speed - sin(turn*pi/2)
+            //Ls -= Math.sin(turnAng*Math.PI/2);
+            Ls = Math.cos(turnAng*Math.PI);
+        }
+        else if(turnAng > 0){
+            // turn Right
+            // rihgt speed - sin(-turn*pi/2)
+            //Rs -= Math.sin(-turnAng*Math.PI/2);
+            Rs = Math.cos(turnAng*Math.PI);
+        }
+        else{
+            // dont turn
+        }
+        tank(Ls*Speed, Rs*Speed);
+    }
+    public void pointNShoot(double desiredAng, double currentAng, double speed){
+        // curAng - desAng?
+        arcade(speed, ( ( (currentAng - desiredAng) /180 ) ) );
+        // will this work?
+    }
+
+    public boolean alignToAngleFunc( double turnAng, double wantedAng){
+        // turn till angle in good range
+        // wanted - current, gives diff and direction in sign
+        //double alignToAngle = wantedAng - gyro.getAngle();
+        double angleDiff = (alignToAngle) - gyro.getAngle();
+        //System.out.println("Current angle: " + currentAngle);
+        // System.out.println("Align to angle: " + alignToAngle);
+        // System.out.println("angle diff: " + angleDiff);
+
+        /* 
+         * I can use the formula ( s / (-x-s-z) ) + 1 where s and z can be any positive num, to make the bot slow down as it gets closer to the wanted angle
+         * s modifies the rate at which the speed drops ( good value for s is 36)
+         * z is where the zero will be, which will push the y-intercept up because we don't want the robot to be unable to turn before it reaches the angle ( good value is 5)
+         */
+        
+        double speedMod = 36;
+        double zeroSpeedMod = 5;
+
+        double turnSpeed = speedMod/(-Math.abs(angleDiff)-speedMod-zeroSpeedMod) + 1 ;
+       
+        
+         if(alignedRun == false){
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! might not need this if statement
+            //gyro.reset();
+            //System.out.println("Id " + neededTagsPerTeam[currentTeam][0]);
+            //double[] aprilPos = readPosDict(neededTagsPerTeam[currentTeam][0]);
+            //double angToPos = Math.atan2(aprilPos[0] , aprilPos[2]);
+            //System.out.println(angToPos);
+            //alignToAngle = angToPos - gyro.getAngle();
+            alignToAngle = wantedAng - gyro.getAngle();
+            //autoTimer.reset();
+            alignedRun = true;
+        }
+
+        //double turnSpeed = 0.25;
+        boolean returnMe = false;
+
+        if( alignToAngle > 0 ){
+            if( angleDiff <= 0 ){
+                // stop moving
+                //System.out.println("STOP turning right 1");
+                arcade(0, 0);
+                returnMe = true;
+
+            }
+            else{
+                arcade(turnSpeed,turnAng);
+
+            }
+
+        }
+        else if(alignToAngle < 0){
+                if( angleDiff >= 0 ){
+                    // stop moving
+                    //System.out.println("STOP turning left -1");
+                    arcade(0, 0);
+                    returnMe = true;
+                }
+                else{
+                    arcade(turnSpeed, -turnAng);
+                }
+        }
+        else{
+            // aligned stop
+            returnMe = true;
+        }
+        return returnMe;
+        
+    }
+    public boolean alignToAngleFunc(double wantedAng){
+        
+        boolean returnMe = alignToAngleFunc( 1, wantedAng);
+        return returnMe;
+        
+    }
+
+    public boolean alignShuffle( double distInitial, double distCurrent, double distWanted){
+        /* 
+         * need to find difference between initial and wanted
+         * turn to approx. camFov angle
+         * move back till half that difference + initial
+         * save that time
+         * move to opp angle, and move forward for that time
+         */
+        /* 
+         * 1. turn
+         * 2. move back
+         * 3. turn other way
+         * 4. move forward for same time
+         * 5. turn forwards
+         */
+        double movementSpeed = 0.4;
+        boolean isDone = false;
+        double direction = Math.signum(distWanted - alignSInitial);
+        double halfWayDist = (alignSInitial + distWanted)/2;
+        if( alignShuffleRun == false){
+            // setup, this will run once
+            alignSInitial = distInitial;
+            alignShuffleRun = true;
+        }
+
+        // main process
+        if(alignShuffleState == 1){
+            // turn to neg camFov
+            if( alignToAngleFunc( -direction*CamFOV) == true){
+                alignedRun = false;
+                alignShuffleState = 2;
+
+                alignSTimer.reset();
+                alignSTimer.start();
+            }
+        }
+        else if(alignShuffleState == 2){
+            // move back, keep track of tag
+            arcade(-movementSpeed, 0);
+            if(Math.abs(distCurrent) >= Math.abs(halfWayDist)){
+                // has reached half way, turn back
+                alignShuffleState = 3;
+                alignSTime = alignSTimer.get();
+                alignSTimer.stop();
+            }
+        }
+        else if(alignShuffleState == 3){
+            // turn to neg camFov
+            if( alignToAngleFunc( direction*CamFOV) == true){
+                alignedRun = false;
+                alignShuffleState = 4;
+
+                alignSTimer.reset();
+                alignSTimer.start();
+            }
+        }
+        else if(alignShuffleState == 4){
+            // move forwards
+            arcade(movementSpeed, 0);
+            if(alignSTimer.get() >= alignSTime){
+                // moved for same amount of time
+                alignShuffleState = 5;
+                // alignSTime = alignSTimer.get();
+                // alignSTimer.stop();
+            }
+        }
+        else if(alignShuffleState == 5){
+            // turn to 0
+            if( alignToAngleFunc( 0) == true){
+                alignedRun = false;
+                alignShuffleState = 6;
+
+                // alignSTimer.reset();
+                // alignSTimer.start();
+                isDone = true;
+                
+            }
+            else{
+                isDone = true;
+            }
+        }
+        return isDone;
+    }
+    
+    public boolean shoot(){
+        // this will shoot automatically
+        double revTime = 3;
+
+        boolean doneShot = false;
+
+        if(hasShot == false){
+            shooterTimer.reset();
+            shooterTimer.start();
+        }
+
+        if(shooterTimer.get() <= revTime){
+            // rev motor
+            revShooter(-1);
+            //topShooter.set(-1);
+        }
+        else if(shooterTimer.get() <= revTime +1){
+            // shoot note
+            shootShooter(-1);
+            // topShooter.set(-1);
+            // bottomShooter.set(-1);
+        }
+        else {
+            //done 
+            shootShooter(0);
+            // topShooter.set(0);
+            // bottomShooter.set(0);
+            doneShot = true;
+        }
+        return doneShot;
+    }
+
+
+	public void disableAllMotors()
+	{
+		driveRobot(0, 0);
+		bottomShooter.set(0);
+		topShooter.set(0);
+		climbMotor.set(0);
+
+		return;
+	}
+
+	public int handleButtons()
+	{
+		double climbascentspeed = 1;
+		double climbdescentspeed = 1;
+		double intakespeed = 1;
+		double firingspeed = 1;
+		double fastturnspeed = 0.35;
+		double slowturnspeed = 0.2;
+		int[] climbbuttons = {11, 12};
+		int[] shooterbuttons = {1, 2, 6};
+		int[] movebuttons = {7, 8, 9, 10};
+		int climbmode = 0;
+		int shootermode = 0;
+		int movemode = 0;
+		int inhibitmovement = 1;
+		int i;
+
+		climbascentspeed *= -1;
+		firingspeed *= -1;
+
+		// Notes:
+		//
+		// climbmode += 1 * Math.pow(2, i) works in a similar way to that of a
+		// binary number system, assigning a different "fingerprint" value for
+		// every given combination of button presses that one can deploy when
+		// one goes about using the controller to manipulate the robot's motors.
+		//
+		// The following code was specifically designed to be functionally
+		// identical to the old code insofar as its functionality is concerned,
+		// with the only exception to this rule being associated with that of 
+		// the functionality of the new turn binds.
+
+		for (i = 0; i < climbbuttons.length; i++) {
+			if (newJoystick.getRawButton(climbbuttons[i]))
+				climbmode += 1 * Math.pow(2, i);
+		}
+
+		switch (climbmode) {
+		case 1:
+		case 3:
+			climbMotor.set(climbascentspeed);
+			break;
+		case 2:
+			climbMotor.set(climbdescentspeed);
+			break;
+		default:
+			climbMotor.set(0);
+			break;
+		}
+        //0001010101010101
+		for (i = 0; i < shooterbuttons.length; i++) {
+			if (newJoystick.getRawButton(shooterbuttons[i]))
+				shootermode += 1 * Math.pow(2, i);
+		}
+
+		switch (shootermode) {
+		case 1:
+		case 3:
+		case 5:
+			bottomShooter.set(firingspeed);
+			topShooter.set(firingspeed);
+			break;
+		case 2:
+		case 6:
+			bottomShooter.set(intakespeed);
+			topShooter.set(intakespeed);
+			break;
+		case 4:
+			topShooter.set(firingspeed);
+			break;
+		default:
+			bottomShooter.set(0);
+			topShooter.set(0);
+			break;
+		}
+
+		for (i = 0; i < movebuttons.length; i++) {
+			if (newJoystick.getRawButton(movebuttons[i]))
+				movemode += 1 * Math.pow(2, i);
+		}
+
+		// TODO: Fine-tune drive bind properties with drivers,
+		// handle other button combinations in a graceful manner.
+
+		switch (movemode) {
+		case 1:
+			driveRobot(-fastturnspeed, -fastturnspeed);
+			break;
+		case 2:
+			driveRobot(fastturnspeed, fastturnspeed);
+			break;
+		case 4:
+		case 5:
+			driveRobot(-slowturnspeed, -slowturnspeed);
+			break;
+		case 8:
+		case 10:
+			driveRobot(slowturnspeed, slowturnspeed);
+			break;
+		default:
+			inhibitmovement = 0;
+			break;
+		}
+
+		return inhibitmovement;
+	}
+
+	@Override
+	public void robotInit()
+	{
+		CameraServer.startAutomaticCapture();
+	}
+
+	@Override
+	public void teleopInit()
+	{
+		disableAllMotors();
+	}
+
+	@Override
+	public void teleopPeriodic()
+	{
+        // System.out.println(position.getTargets());
+		double x_ampl = newJoystick.getRawAxis(1);
+		double y_ampl = newJoystick.getRawAxis(0);
+		double leftspeed = 0;
+		double rightspeed = 0;
+		double deadzone = 0.01;
+
+		if (-deadzone < x_ampl && x_ampl < deadzone) x_ampl = 0;
+		if (-deadzone < y_ampl && y_ampl < deadzone) y_ampl = 0;
+
+		leftspeed = (y_ampl - x_ampl);
+		rightspeed = (y_ampl + x_ampl);
+
+        // leftspeed = (leftspeed > 0.3)? 0.3: leftspeed;
+        // rightspeed = (rightspeed > 0.3)? 0.3 : rightspeed;
+        
+
+		if (handleButtons() == 0) driveRobot(leftspeed, rightspeed);
+	}
+
+	@Override
+	public void autonomousInit()
+	{
+		autoTimer.restart();
+		autoTimer.start();
+		disableAllMotors();
+	}
+
+	@Override
+	public void autonomousPeriodic()
+	{
+		double[] timeincrements = {0.5, 0.5, 1, 1, 1, 3};
+		double timeelapsed = autoTimer.get();
+		double accumulator = 0;
+		double enableshooter = 0;
+		double jerkspeed = 0.5;
+		double normalspeed = 0.25;
+		int mode = 0;
+		int i;
+
+		enableshooter *= -1;
+
+		for (i = 0; i < timeincrements.length; i++) {
+			accumulator += timeincrements[i];
+			if (accumulator > timeelapsed) {
+				mode = i;
+				break;
+			}
+		}
+
+		switch (mode) {
+		case 0:
+			driveRobot(-jerkspeed, jerkspeed);
+			topShooter.set(enableshooter);
+			break;
+		case 1:
+			driveRobot(jerkspeed, -jerkspeed);
+			break;
+		case 2:
+			driveRobot(0, 0);
+            break;
+		case 3:
+			bottomShooter.set(enableshooter);
+			topShooter.set(enableshooter);
+			break;
+		case 4:
+			driveRobot(-normalspeed, normalspeed);
+			bottomShooter.set(0);
+			topShooter.set(0);
+			break;
+		default:
+			disableAllMotors();
+			break;
+		}
+	}
+}
