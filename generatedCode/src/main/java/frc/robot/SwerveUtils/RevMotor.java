@@ -25,28 +25,44 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
  * </ul>
   */
 public class RevMotor {
-    
+    /** The actual motor  */
     public SparkMax Motor;
-    
+    /** The Clossed loop controller, used to contorl speed */
     public SparkClosedLoopController CLController;
-    
+    /** Maximum rotations allowed for this motor  */
     protected double maxRot = 10;
-
-    protected double minRot = 1;
-
+    /** Minimum rotations allowed for this motor  */
+    protected double minRot = -10;
+    /** Offset used when minimum rotations is reached  */
     protected double minRotOffset = 0.1;
-    
+    /** Offset used when maximum rotations is reached  */
     protected double maxRotOffset = 0.1;
     
-
+    /** Value used to control the motor.
+     * Units and usdage depend on the current Control Type
+     * @see #controlT
+     */
     private double refVal = 0;
+    /** The current Control Type. Determins how the motor should be controled 
+     * @see #refVal
+     */
     private ControlType controlT = ControlType.kPosition;
     
+    /**
+     * Constucts a motor and configures it with default configuration.
+     * @param deviceId The device ID
+     * @param motorType The type of motor, brushed or burshless
+      */
     public RevMotor(int deviceId, MotorType motorType){
         this(new SparkMax(deviceId, motorType), false);
         
     }
     
+    /**
+     * Uses the motor given and configures if requested.
+     * @param motor The motor to use.
+     * @param IsAlreadyConfigured Whether the motor is/will be configured
+      */
     public RevMotor(SparkMax motor, boolean IsAlreadyConfigured){
         Motor = motor;
         CLController = Motor.getClosedLoopController();
@@ -63,12 +79,19 @@ public class RevMotor {
                 .velocityConversionFactor(1);//Keep in rotaion per minute (ew) by default
             config.closedLoop
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-                // .pid(1.0, 0.0, 0.0);
+                // .pid(0.0, 0.0, 0.0);
             Motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
         
     }
     
+    /**
+     * Configures motor by calling {@link SparkMax#configure(SparkBaseConfig, ResetMode, PersistMode)}
+     * @param configs The configuration
+     * @param resetMode I don't know, see {@link SparkMax#configure(SparkBaseConfig, ResetMode, PersistMode)}
+     * @param persistMode I don't know, see {@link SparkMax#configure(SparkBaseConfig, ResetMode, PersistMode)}
+     * @return {@link REVLibError#kOk} if successful
+      */
     public REVLibError configure(SparkMaxConfig configs, ResetMode resetMode, PersistMode persistMode){
        return Motor.configure(configs, resetMode, persistMode);
     }
@@ -93,7 +116,7 @@ public class RevMotor {
     
     /**
      * Here in case a more complicated way of setting references is needed, 
-     * because accessing {@link #CLController} directly to set reference might be overridin
+     * because accessing {@link #CLController} directly to set reference might be overridden
      * when {@link #resetReference()} is called. In short, this allows the other 
      * {@link SparkClosedLoopController#setReference(double, ControlType)} methods to be used.
      * @see SparkClosedLoopController#setReference(double, ControlType, com.revrobotics.spark.ClosedLoopSlot)
@@ -105,10 +128,29 @@ public class RevMotor {
         return CLController.setReference(refVal, controlT);
     }
     
+    /**
+     * Uses the Closed loop controller to set it's reference.
+     * <p>
+     * <b>Note:</b> the set reference will be overridden unless {@link #defaultSetRef()}
+     * is changed overriden to do nothing.
+     * </p>
+     * @param value The value to set depending on the control type.
+     * @param type The control type.
+     * @return The {@code REVLibError} normaly returned by {@link SparkClosedLoopController#setReference(double, ControlType)}
+      */
     public REVLibError setRefernce(double value, ControlType type){
         return CLController.setReference(value, type);
     }
     
+    /**
+     * Gets number of rotaions when given the percent from min to max.
+     * <p>
+     * (i.e. 1 or 100% returns the {@link #maxRot maximum rotations},
+     *  0 or 0% returns the {@link #minRot minimum rotations})
+     * </p>
+     * @param percent the percent of rotations
+     * @return the absolute value of rotations
+      */
     public double getRotationsFromPercent(double percent){
         return (maxRot-minRot) *percent+ minRot;
     }
@@ -122,11 +164,21 @@ public class RevMotor {
         refVal = Math.min(Math.max(speed, -1), 1);
     }
     
-    public void goToMaxRotationPercent(double percentMaxRotation){
-        refVal = (maxRot-minRot) * Math.min(Math.max(percentMaxRotation, 0), 1) + minRot;
+    /**
+     * Moves motor towords the percent of rotations given.
+     * @param percentRotation percent of rotaions, is element of [0, 1]
+     * @see #getRotationsFromPercent(double)
+      */
+    public void goToRotationPercent(double percentRotation){
+        refVal = (maxRot-minRot) * Math.min(Math.max(percentRotation, 0), 1) + minRot;
         controlT = ControlType.kPosition;
     }
     
+    /**
+     * Moves motor towords the number of rotations given.
+     * @param rotations the number of rotations, between {@link #maxRot maximum rotations} 
+     * and {@link #minRot minimum rotations}.
+      */
     public void goToRotation(double rotations){
         refVal = Math.min(Math.max(rotations, minRot), maxRot);
         controlT = ControlType.kPosition;
@@ -169,7 +221,15 @@ public class RevMotor {
     }
     
     public static class RevMotorSetPosition extends RevMotor{
-        double[] setPositionsPercent;
+        /** The percents of rotation position to move motor to.  */
+        final double[] setPositionsPercent;
+        /**
+         * Constructs motor and cofigures it with default configuration, with wanted set positions.
+         * @param deviceId The device ID
+         * @param type The type of motor
+         * @param percentOfPositions the percent between {@link #maxRot max rotations} 
+         * and {@link #minRot min rotations} wanted per position
+          */
         public RevMotorSetPosition(int deviceId, MotorType type, double... percentOfPositions){
             super(deviceId, type);
             setPositionsPercent = new double[percentOfPositions.length];
@@ -177,6 +237,14 @@ public class RevMotor {
                 setPositionsPercent[i] = Math.min(Math.max(percentOfPositions[i], 0), 1);
             }
         }
+        
+        /**
+         * Uses the motor given and configures if requested.
+         * @param motor The motor to use.
+         * @param IsAlreadyConfigured Whether the motor is/will be configured
+         * @param percentOfPositions the percent between {@link #maxRot max rotations} 
+         * and {@link #minRot min rotations} wanted per position
+         */
         public RevMotorSetPosition(SparkMax motor, boolean IsAlreadyConfigured, double... percentOfPositions){
             super(motor, IsAlreadyConfigured);
             setPositionsPercent = new double[percentOfPositions.length];
@@ -185,10 +253,14 @@ public class RevMotor {
             }
         }
     
+        /**
+         * Goes to the set position wanted.
+         * @param positionNumber the index + 1 of given positions
+          */
         public void goToSetPosition(int positionNumber){
             if(positionNumber >= setPositionsPercent.length || positionNumber < 0) 
                 positionNumber=0;
-            goToMaxRotationPercent(setPositionsPercent[positionNumber-1]);
+            goToRotationPercent(setPositionsPercent[positionNumber-1]);
         }
     }
 }

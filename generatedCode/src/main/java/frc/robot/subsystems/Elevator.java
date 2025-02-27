@@ -98,7 +98,7 @@ public class Elevator implements Subsystem {
     }
     
     public void goToHeightPercent(double percentHeight){
-        upDownMotor.goToMaxRotationPercent(percentHeight);
+        upDownMotor.goToRotationPercent(percentHeight);
     }
     
     // level must range between 1 and 3 inclusive
@@ -116,17 +116,18 @@ public class Elevator implements Subsystem {
         armMotor.resetReference();
         coralIntakeMotor.resetReference();
     }
-    
+    //Using run once here because the motor will continue to go to position/speed
+    //it doesn't need to be called periodically, only when a change in motion is wanted
     public Command goToHeightPercentCommand(double percentHeight){
-        return run( ()-> {goToHeightPercent(percentHeight);});
+        return runOnce( ()-> {goToHeightPercent(percentHeight);});
     }
     
     public Command goToLevelCommand(int level){
-        return run( ()->{goToLevel(level);});
+        return runOnce( ()->{goToLevel(level);});
     }
     
     public Command moveElavatorWithSpeedCommand(double speed){
-        return run(()->{moveElavatorWithSpeed(speed);});
+        return runOnce(()->{moveElavatorWithSpeed(speed);});
     }
     
     public Command goToLevel2AndOutputTest(){

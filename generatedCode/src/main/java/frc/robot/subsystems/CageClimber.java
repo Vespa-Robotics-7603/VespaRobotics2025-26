@@ -9,9 +9,9 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.SwerveUtils.RevMotor;
-import frc.robot.SwerveUtils.RevMotor.RevMotorSetPosition;
 
 //TODO: MAKE SURE THIS STOPS!!!!!
 public class CageClimber implements Subsystem{
@@ -43,15 +43,23 @@ public class CageClimber implements Subsystem{
     }
     
     public void climb(){
-        footMotor.goToMaxRotationPercent(0);
+        footMotor.goToRotationPercent(0);
     }
     public void up(){
-        footMotor.goToMaxRotationPercent(1);
+        footMotor.goToRotationPercent(1);
     }
     
     @Override
     public void periodic(){
         footMotor.resetReference();
+    }
+    
+    public Command climbCommand(){
+        return runOnce(this::climb);
+    }
+    
+    public Command upCommand(){
+        return runOnce(this::up);
     }
     
 }

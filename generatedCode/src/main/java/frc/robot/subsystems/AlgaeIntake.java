@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.SwerveUtils.RevMotor;
 
@@ -23,5 +24,13 @@ public class AlgaeIntake implements Subsystem {
     @Override
     public void periodic(){
         algeaMotor.resetReference();
+    }
+    
+    public Command AlgaeInCommand(){
+        return runOnce(this::AlgaeIn);
+    }
+    
+    public Command AlgaeOutCommand(){
+        return runOnce(this::AlgaeOut);
     }
 }
