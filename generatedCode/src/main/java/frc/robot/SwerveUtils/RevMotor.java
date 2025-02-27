@@ -23,6 +23,10 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
  *      <li>Confuguring the motor later by acessing the {@link #Motor} field;
  *      <li>Or by using the {@link #configure(SparkMaxConfig, ResetMode, PersistMode)} method.
  * </ul>
+ * <p>
+ * <b>NOTE:</b> You need to call {@link #resetReference()} in any periodic method
+ * (like teleop periodic or subystems perodic)
+ * </p>
   */
 public class RevMotor {
     /** The actual motor  */
