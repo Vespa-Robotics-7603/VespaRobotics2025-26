@@ -71,10 +71,10 @@ public class RevMotor {
         Motor = motor;
         CLController = Motor.getClosedLoopController();
         
-        SparkMaxConfig config = new SparkMaxConfig();
         CLController.setReference(refVal, controlT);
         
         if(!IsAlreadyConfigured){
+            SparkMaxConfig config = new SparkMaxConfig();
             config
                 .inverted(false)
                 .idleMode(IdleMode.kBrake);
@@ -166,6 +166,16 @@ public class RevMotor {
     public void setSpeed(double speed){
         controlT = ControlType.kDutyCycle;
         refVal = Math.min(Math.max(speed, -1), 1);
+    }
+    
+    /**
+     * Moves the motor by the given number of rotations.
+     * @param numberOfRotations the number of rotations to turn by.
+      */
+    public void moveByRotations(double numberOfRotations){
+        double currentRot = Motor.getEncoder().getPosition();
+        refVal = Math.min(Math.max(currentRot + numberOfRotations, minRot), maxRot);
+        controlT = ControlType.kPosition;
     }
     
     /**

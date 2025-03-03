@@ -62,7 +62,7 @@ public class Elevator implements Subsystem {
         armMotor = (RevMotorSetPosition) new RevMotorSetPosition(
             new SparkMax(1, MotorType.kBrushless),
              true,
-             levels
+             armPositions
         ).setMaxRot(100)//TODO get actual max rotation
         .setMinRot(1);
         
@@ -79,14 +79,33 @@ public class Elevator implements Subsystem {
             
         armMotor.configure(configArm, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
-        coralIntakeMotor = new RevMotor(2, MotorType.kBrushless);
+        SparkMaxConfig configIntake = new SparkMaxConfig();
+        //TODO, find device id
+        coralIntakeMotor = new RevMotor(
+            new SparkMax(2, MotorType.kBrushless),
+             true
+        ).setMaxRot(Double.POSITIVE_INFINITY)//TODO get actual max rotation
+        .setMinRot(Double.NEGATIVE_INFINITY);
+        
+        config
+            .inverted(false)
+            .idleMode(IdleMode.kBrake);
+        config.encoder
+            .positionConversionFactor(1)//keeping in rotations
+            .velocityConversionFactor(1.0/60.0);// convert to rotations per second
+        config.closedLoop
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            //TODO fix these
+            .pid(1.0, 0.0, 0.0);
+            
+        coralIntakeMotor.configure(configIntake, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     
     public void CoralIn(){
-        coralIntakeMotor.setSpeed(0.5);
+        coralIntakeMotor.moveByRotations(-1);
     }
     public void CoralOut(){
-        coralIntakeMotor.setSpeed(0.5);
+        coralIntakeMotor.setSpeed(0.6);
     }
     
     public void armIntake(){
