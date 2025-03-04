@@ -20,8 +20,8 @@ public class Elevator implements Subsystem {
     // SparkClosedLoopController upDownMotorCLContr = upDownMotor.getClosedLoopController();
     
     RevMotorSetPosition upDownMotor;
-    RevMotorSetPosition armMotor;
-    RevMotor coralIntakeMotor;
+    // RevMotorSetPosition armMotor;
+    // RevMotor coralIntakeMotor;
     
     //TODO get actual max rotation when build is done
     // double maxRot = 100;
@@ -31,7 +31,7 @@ public class Elevator implements Subsystem {
     double l3 = 1;
     double[] levels = {l1, l2, l3};
     //arm positions, one for intake, one for output
-    double[] armPositions = {0.2, 0.30};
+    // double[] armPositions = {0.2, 0.30};
     
     public Elevator(){
         SparkMaxConfig config = new SparkMaxConfig();
@@ -57,64 +57,64 @@ public class Elevator implements Subsystem {
             
         upDownMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
-        SparkMaxConfig configArm = new SparkMaxConfig();
-        //TODO, find device id
-        armMotor = (RevMotorSetPosition) new RevMotorSetPosition(
-            new SparkMax(1, MotorType.kBrushless),
-             true,
-             armPositions
-        ).setMaxRot(100)//TODO get actual max rotation
-        .setMinRot(1);
+        // SparkMaxConfig configArm = new SparkMaxConfig();
+        // //TODO, find device id
+        // armMotor = (RevMotorSetPosition) new RevMotorSetPosition(
+        //     new SparkMax(1, MotorType.kBrushless),
+        //      true,
+        //      armPositions
+        // ).setMaxRot(100)//TODO get actual max rotation
+        // .setMinRot(1);
         
-        config
-            .inverted(false)
-            .idleMode(IdleMode.kBrake);
-        config.encoder
-            .positionConversionFactor(1)//keeping in rotations
-            .velocityConversionFactor(1.0/60.0);// convert to rotations per second
-        config.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            //TODO fix these
-            .pid(1.0, 0.0, 0.0);
+        // config
+        //     .inverted(false)
+        //     .idleMode(IdleMode.kBrake);
+        // config.encoder
+        //     .positionConversionFactor(1)//keeping in rotations
+        //     .velocityConversionFactor(1.0/60.0);// convert to rotations per second
+        // config.closedLoop
+        //     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        //     //TODO fix these
+        //     .pid(1.0, 0.0, 0.0);
             
-        armMotor.configure(configArm, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // armMotor.configure(configArm, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
-        SparkMaxConfig configIntake = new SparkMaxConfig();
-        //TODO, find device id
-        coralIntakeMotor = new RevMotor(
-            new SparkMax(2, MotorType.kBrushless),
-             true
-        ).setMaxRot(Double.POSITIVE_INFINITY)//TODO get actual max rotation
-        .setMinRot(Double.NEGATIVE_INFINITY);
+        // SparkMaxConfig configIntake = new SparkMaxConfig();
+        // //TODO, find device id
+        // coralIntakeMotor = new RevMotor(
+        //     new SparkMax(2, MotorType.kBrushless),
+        //      true
+        // ).setMaxRot(Double.POSITIVE_INFINITY)//TODO get actual max rotation
+        // .setMinRot(Double.NEGATIVE_INFINITY);
         
-        config
-            .inverted(false)
-            .idleMode(IdleMode.kBrake);
-        config.encoder
-            .positionConversionFactor(1)//keeping in rotations
-            .velocityConversionFactor(1.0/60.0);// convert to rotations per second
-        config.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            //TODO fix these
-            .pid(1.0, 0.0, 0.0);
+        // config
+        //     .inverted(false)
+        //     .idleMode(IdleMode.kBrake);
+        // config.encoder
+        //     .positionConversionFactor(1)//keeping in rotations
+        //     .velocityConversionFactor(1.0/60.0);// convert to rotations per second
+        // config.closedLoop
+        //     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        //     //TODO fix these
+        //     .pid(1.0, 0.0, 0.0);
             
-        coralIntakeMotor.configure(configIntake, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // coralIntakeMotor.configure(configIntake, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     
-    public void CoralIn(){
-        coralIntakeMotor.moveByRotations(-1);
-    }
-    public void CoralOut(){
-        coralIntakeMotor.setSpeed(0.6);
-    }
+    // public void CoralIn(){
+    //     coralIntakeMotor.moveByRotations(-1);
+    // }
+    // public void CoralOut(){
+    //     coralIntakeMotor.setSpeed(0.6);
+    // }
     
-    public void armIntake(){
-        armMotor.goToSetPosition(1);
-    }
+    // public void armIntake(){
+    //     armMotor.goToSetPosition(1);
+    // }
     
-    public void armOutput(){
-        armMotor.goToSetPosition(2);
-    }
+    // public void armOutput(){
+    //     armMotor.goToSetPosition(2);
+    // }
     
     public void goToHeightPercent(double percentHeight){
         upDownMotor.goToRotationPercent(percentHeight);
@@ -132,8 +132,8 @@ public class Elevator implements Subsystem {
     @Override
     public void periodic(){
         upDownMotor.resetReference();
-        armMotor.resetReference();
-        coralIntakeMotor.resetReference();
+        // armMotor.resetReference();
+        // coralIntakeMotor.resetReference();
     }
     //Using run once here because the motor will continue to go to position/speed
     //it doesn't need to be called periodically, only when a change in motion is wanted
@@ -149,6 +149,7 @@ public class Elevator implements Subsystem {
         return runOnce(()->{moveElavatorWithSpeed(speed);});
     }
     
+    @Deprecated
     public Command goToLevel2AndOutputTest(){
         //test command chaining for outputting coral on level 2
         Command f = new Command() {
@@ -177,28 +178,28 @@ public class Elevator implements Subsystem {
         Command d = new Command() {
             @Override
             public void execute(){
-                armOutput();
+                // armOutput();
             }
             
             @Override
             public boolean isFinished(){
-                double armRot = armMotor.Motor.getEncoder().getPosition();
-                double wantedRot = armMotor.getRotationsFromPercent(l2);
-                double withinRange = 0.2;
-                if( 
-                    armRot > wantedRot-withinRange
-                    && armRot < wantedRot+withinRange
-                ){
-                    // within range, should end
-                    return false;
-                }
+                // double armRot = armMotor.Motor.getEncoder().getPosition();
+                // double wantedRot = armMotor.getRotationsFromPercent(l2);
+                // double withinRange = 0.2;
+                // if( 
+                //     armRot > wantedRot-withinRange
+                //     && armRot < wantedRot+withinRange
+                // ){
+                //     // within range, should end
+                //     return false;
+                // }
                 return true;
             }
             
             @Override
             public void end(boolean interrupted){
                 if(!interrupted){
-                    CoralOut();
+                    // CoralOut();
                 }
             }
         };
