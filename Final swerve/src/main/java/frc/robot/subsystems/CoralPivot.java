@@ -18,7 +18,9 @@ public class CoralPivot implements Subsystem{
     
     RevMotorSetPosition armMotor;
     //arm positions, one for intake, one for output
-    double[] armPositions = {0.2, 0.30};
+    double outPos = 6.5;
+    double inPos = 10;
+    // double[] armPositions = {outPos, inPos};
     
     public CoralPivot(){
         SparkMaxConfig configArm = new SparkMaxConfig();
@@ -26,12 +28,12 @@ public class CoralPivot implements Subsystem{
         armMotor = (RevMotorSetPosition) new RevMotorSetPosition(
             new SparkMax(3, MotorType.kBrushless),
              true,
-             armPositions
+             outPos, inPos
         ).setMaxRot(100)//TODO get actual max rotation
         .setMinRot(1);
         
         configArm
-            .inverted(false)
+            .inverted(true)
             .idleMode(IdleMode.kBrake);
         configArm.encoder
             .positionConversionFactor(1)//keeping in rotations
@@ -46,11 +48,11 @@ public class CoralPivot implements Subsystem{
     }
     
     public void armIntake(){
-        armMotor.goToSetPosition(1);
+        armMotor.goToSetPosition(0);
     }
     
     public void armOutput(int level){
-        armMotor.goToSetPosition(2);
+        armMotor.goToSetPosition(1);
     }
     
     @Override

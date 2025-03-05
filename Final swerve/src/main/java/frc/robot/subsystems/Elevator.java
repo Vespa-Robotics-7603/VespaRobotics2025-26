@@ -16,36 +16,30 @@ import frc.robot.SwerveUtils.RevMotor.RevMotorSetPosition;
 
 public class Elevator implements Subsystem {
     
-    // SparkMax upDownMotor = new SparkMax(0, MotorType.kBrushless);
-    // SparkClosedLoopController upDownMotorCLContr = upDownMotor.getClosedLoopController();
-    
     RevMotorSetPosition upDownMotor;
-    // RevMotorSetPosition armMotor;
-    // RevMotor coralIntakeMotor;
+    
     
     //TODO get actual max rotation when build is done
     // double maxRot = 100;
     //TODO get percent height of levels wanted
-    double l1 = 0;
-    double l2 = 0.5;
-    double l3 = 1;
+    double intakePos = 100;
+    double l1 = 388.019;
+    double l2 = 588.33;
+    double l3 = 1040;
     double[] levels = {l1, l2, l3};
-    //arm positions, one for intake, one for output
-    // double[] armPositions = {0.2, 0.30};
-    
+   
     public Elevator(){
         upDownMotor = (RevMotorSetPosition) new RevMotorSetPosition(
             new SparkMax(2, MotorType.kBrushless),
              true,
              levels
-        ).setMaxRot(100)//TODO get actual max rotation
-        .setMinRot(1);
+        ).setMaxRot(1050)//TODO get actual max rotation
+        .setMinRot(-10);
         
         SparkMaxConfig config = new SparkMaxConfig();
         config
             .inverted(true)
             .idleMode(IdleMode.kBrake);
-        
         config.encoder
             .positionConversionFactor(1)//keeping in rotations
             .velocityConversionFactor(1.0/60.0);//Keep in rotaion per minute (ew) by default
@@ -99,20 +93,6 @@ public class Elevator implements Subsystem {
         // coralIntakeMotor.configure(configIntake, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     
-    // public void CoralIn(){
-    //     coralIntakeMotor.moveByRotations(-1);
-    // }
-    // public void CoralOut(){
-    //     coralIntakeMotor.setSpeed(0.6);
-    // }
-    
-    // public void armIntake(){
-    //     armMotor.goToSetPosition(1);
-    // }
-    
-    // public void armOutput(){
-    //     armMotor.goToSetPosition(2);
-    // }
     
     public void goToHeightPercent(double percentHeight){
         upDownMotor.goToRotationPercent(percentHeight);
@@ -120,7 +100,11 @@ public class Elevator implements Subsystem {
     
     // level must range between 1 and 3 inclusive
     public void goToLevel(int level){
-        goToHeightPercent(levels[level-1]);
+        upDownMotor.goToRotation(levels[level-1]);
+    }
+    
+    public void goToIntake(){
+        upDownMotor.goToRotation(intakePos);
     }
     
     public void moveElavatorWithSpeed(double speed){

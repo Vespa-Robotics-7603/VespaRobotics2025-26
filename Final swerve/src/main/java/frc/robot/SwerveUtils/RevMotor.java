@@ -198,6 +198,10 @@ public class RevMotor {
         controlT = ControlType.kPosition;
     }
     
+    public void goToStart(){
+        goToRotation(0);
+    }
+    
     public double getMaxRot() {
         return maxRot;
     }
@@ -236,20 +240,17 @@ public class RevMotor {
     
     public static class RevMotorSetPosition extends RevMotor{
         /** The percents of rotation position to move motor to.  */
-        final double[] setPositionsPercent;
+        final double[] setPositions;
         /**
          * Constructs motor with wanted set positions.
          * @param deviceId The device ID
          * @param type The type of motor
-         * @param percentOfPositions the percent between {@link #maxRot max rotations} 
+         * @param Positions the percent between {@link #maxRot max rotations} 
          * and {@link #minRot min rotations} wanted per position
           */
-        public RevMotorSetPosition(int deviceId, MotorType type, double... percentOfPositions){
+        public RevMotorSetPosition(int deviceId, MotorType type, double... Positions){
             super(deviceId, type);
-            setPositionsPercent = new double[percentOfPositions.length];
-            for (int i = 0; i < percentOfPositions.length; i++) {
-                setPositionsPercent[i] = Math.min(Math.max(percentOfPositions[i], 0), 1);
-            }
+            setPositions = Positions;
         }
         
         /**
@@ -259,22 +260,19 @@ public class RevMotor {
          * @param percentOfPositions the percent between {@link #maxRot max rotations} 
          * and {@link #minRot min rotations} wanted per position
          */
-        public RevMotorSetPosition(SparkMax motor, boolean IsAlreadyConfigured, double... percentOfPositions){
+        public RevMotorSetPosition(SparkMax motor, boolean IsAlreadyConfigured, double... Positions){
             super(motor, IsAlreadyConfigured);
-            setPositionsPercent = new double[percentOfPositions.length];
-            for (int i = 0; i < percentOfPositions.length; i++) {
-                setPositionsPercent[i] = Math.min(Math.max(percentOfPositions[i], 0), 1);
-            }
+            setPositions = Positions;
         }
     
         /**
          * Goes to the set position wanted.
-         * @param positionNumber the index + 1 of given positions
+         * @param positionNumber the index of given positions
           */
         public void goToSetPosition(int positionNumber){
-            if(positionNumber >= setPositionsPercent.length || positionNumber < 0) 
+            if(positionNumber > setPositions.length || positionNumber < 0) 
                 positionNumber=0;
-            goToRotationPercent(setPositionsPercent[positionNumber-1]);
+            goToRotation(setPositions[positionNumber]);
         }
     }
 }

@@ -42,10 +42,10 @@ public class CageClimber implements Subsystem{
     }
     
     public void climb(){
-        footMotor.goToRotationPercent(0);
+        footMotor.goToRotationPercent(0.01);
     }
     public void up(){
-        footMotor.goToRotationPercent(1);
+        footMotor.goToRotationPercent(0.99);
     }
     
     @Override
