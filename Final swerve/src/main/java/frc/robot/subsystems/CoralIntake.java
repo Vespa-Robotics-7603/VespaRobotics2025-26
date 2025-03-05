@@ -12,6 +12,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 public class CoralIntake implements Subsystem {
     
     VictorSPX intakeMotor = new VictorSPX(9);
+    double turnInRot = 0.3;
+    double turnOutRot = 1;
+    double refVal = 0;
+    ControlMode controlM = ControlMode.Position;
     
     public CoralIntake(){
         //TODO setup victor spx
@@ -20,25 +24,28 @@ public class CoralIntake implements Subsystem {
         intakeMotor.config_kI(0, 0.1);
         intakeMotor.config_kD(0,0.1);
         //feed forwards I assume
-        intakeMotor.config_kF(0, 0);
+        // intakeMotor.config_kF(0, 0);
         //velocity in sensor units per 100 ms???? ew
         // intakeMotor.configMotionCruiseVelocity(2);
         //for all configs
-        VictorSPXConfiguration conf = new VictorSPXConfiguration();
+        // VictorSPXConfiguration conf = new VictorSPXConfiguration();
         // conf.slot0.kP = 0; //I don't think this should be used
         // conf.primaryPID. // nor should this
         // driveLeft1.configAllSettings(conf);
     }
     
     public void CoralIn(){
-        // coralIntakeMotor.moveByRotations(-1);
-        double pos = intakeMotor.getSelectedSensorPosition();
-        //above probably gets position, but there is no documentation...
-        double diffInRot = -0.3;
-        intakeMotor.set(ControlMode.Position, pos + diffInRot);
+        refVal -= turnInRot;
+        controlM = ControlMode.Position;
     }
+    
     public void CoralOut(){
-        // coralIntakeMotor.setSpeed(0.6);
-        intakeMotor.set(ControlMode.PercentOutput, 0.4);
+        refVal += turnOutRot;
+        controlM = ControlMode.Position;
+    }
+    
+    @Override
+    public void periodic(){
+        intakeMotor.set(controlM, refVal);
     }
 }
