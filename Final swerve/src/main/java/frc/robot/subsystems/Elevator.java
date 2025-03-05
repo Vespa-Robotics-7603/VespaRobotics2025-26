@@ -23,11 +23,15 @@ public class Elevator implements Subsystem {
     // double maxRot = 100;
     //TODO get percent height of levels wanted
     double intakePos = 100;
-    double l1 = 388.019;
-    double l2 = 588.33;
-    double l3 = 1040;
-    double[] levels = {l1, l2, l3};
-   
+    double l0 = 0;
+    double l1 = 300;
+    double l2 = 600;
+    double l3 = 900;
+    double[] levels = {l0,l1, l2, l3};
+    int currentLevel = 0;
+    //arm positions, one for intake, one for output
+    // double[] armPositions = {0.2, 0.30};
+    
     public Elevator(){
         upDownMotor = (RevMotorSetPosition) new RevMotorSetPosition(
             new SparkMax(2, MotorType.kBrushless),
@@ -100,12 +104,10 @@ public class Elevator implements Subsystem {
     
     // level must range between 1 and 3 inclusive
     public void goToLevel(int level){
-        upDownMotor.goToRotation(levels[level-1]);
+        upDownMotor.goToRotation(levels[level]);
     }
     
-    public void goToIntake(){
-        upDownMotor.goToRotation(intakePos);
-    }
+    
     
     public void moveElavatorWithSpeed(double speed){
         upDownMotor.setSpeed(speed);
@@ -116,6 +118,7 @@ public class Elevator implements Subsystem {
         upDownMotor.resetReference();
         // armMotor.resetReference();
         // coralIntakeMotor.resetReference();
+        //System.out.println("Running Periodic");
     }
     //Using run once here because the motor will continue to go to position/speed
     //it doesn't need to be called periodically, only when a change in motion is wanted
@@ -191,6 +194,33 @@ public class Elevator implements Subsystem {
         
         return f.andThen(d);
     }
+
+    public Command oneLevelUp(){
+        return runOnce(()->{
+            if(currentLevel < 3){
+                currentLevel++;
+            }
+            
+            goToLevel(currentLevel);
+            
+        });
+    }
+    public Command oneLevelDown(){
+        return runOnce(()->{
+            if(currentLevel > 0){
+                currentLevel--;
+            }
+            goToLevel(currentLevel);
+        });
+        
+    }
+    public Command toStart(){
+        return runOnce(() ->{
+            currentLevel = 0;
+            upDownMotor.goToStart();
+        });
+    }
+    
     
     public Command RunCommandToDoThing(){
         return run(()->{

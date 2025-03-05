@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -29,8 +30,8 @@ public class CoralPivot implements Subsystem{
             new SparkMax(3, MotorType.kBrushless),
              true,
              outPos, inPos
-        ).setMaxRot(100)//TODO get actual max rotation
-        .setMinRot(1);
+        ).setMaxRot(13)//TODO get actual max rotation
+        .setMinRot(-1);
         
         configArm
             .inverted(true)
@@ -40,8 +41,10 @@ public class CoralPivot implements Subsystem{
             .velocityConversionFactor(1.0/60.0);// convert to rotations per second
         configArm.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            //TODO fix these
-            .pid(1.0, 0.0, 0.0);
+            .pid(1.0, 0.0, 0.0)
+            .maxMotion.maxVelocity(2);
+
+            
             
         armMotor.configure(configArm, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
@@ -58,5 +61,18 @@ public class CoralPivot implements Subsystem{
     @Override
     public void periodic(){
         armMotor.resetReference();
+        System.out.println(armMotor.Motor.getEncoder().getPosition());
     }
+    public Command toOutput(){
+        return runOnce(() -> {
+            armOutput(0);
+        });
+    }
+    public Command toIntake(){
+        return runOnce(() -> {
+            armIntake();
+        });
+    }
+
+    
 }
