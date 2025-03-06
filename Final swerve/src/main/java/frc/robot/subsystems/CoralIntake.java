@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 //this gives me an error so I can't look at it's methods, but it builds
@@ -47,5 +48,13 @@ public class CoralIntake implements Subsystem {
     @Override
     public void periodic(){
         intakeMotor.set(controlM, refVal);
+    }
+    
+    public Command CoralInCommand(){
+        return runOnce(this::CoralIn);
+    }
+    
+    public Command CoralOutCommand(){
+        return runOnce(this::CoralOut);
     }
 }

@@ -132,7 +132,7 @@ public class TunerConstants {
     private static final int kFrontLeftSteerMotorId = 31;
     private static final int kFrontLeftEncoderId = 33;
     private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.006591796875);
-    private static final boolean kFrontLeftSteerMotorInverted = true;
+    private static final boolean kFrontLeftSteerMotorInverted = false;
     private static final boolean kFrontLeftEncoderInverted = false;
 
     private static final Distance kFrontLeftXPos = Inches.of(12.25);
@@ -143,7 +143,7 @@ public class TunerConstants {
     private static final int kFrontRightSteerMotorId = 21;
     private static final int kFrontRightEncoderId = 23;
     private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.422607421875);
-    private static final boolean kFrontRightSteerMotorInverted = true;
+    private static final boolean kFrontRightSteerMotorInverted = false;
     private static final boolean kFrontRightEncoderInverted = false;
 
     private static final Distance kFrontRightXPos = Inches.of(12.25);
@@ -154,7 +154,7 @@ public class TunerConstants {
     private static final int kBackLeftSteerMotorId = 41;
     private static final int kBackLeftEncoderId = 43;
     private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.04052734375);
-    private static final boolean kBackLeftSteerMotorInverted = true;
+    private static final boolean kBackLeftSteerMotorInverted = false;
     private static final boolean kBackLeftEncoderInverted = false;
 
     private static final Distance kBackLeftXPos = Inches.of(-12.25);
@@ -165,7 +165,7 @@ public class TunerConstants {
     private static final int kBackRightSteerMotorId = 11;
     private static final int kBackRightEncoderId = 13;
     private static final Angle kBackRightEncoderOffset = Rotations.of(0.177978515625);
-    private static final boolean kBackRightSteerMotorInverted = true;
+    private static final boolean kBackRightSteerMotorInverted = false;
     private static final boolean kBackRightEncoderInverted = false;
 
     private static final Distance kBackRightXPos = Inches.of(-12.25);

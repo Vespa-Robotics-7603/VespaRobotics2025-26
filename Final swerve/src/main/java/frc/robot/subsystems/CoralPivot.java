@@ -17,7 +17,7 @@ import frc.robot.SwerveUtils.RevMotor.RevMotorSetPosition;
 public class CoralPivot implements Subsystem{
     
     
-    RevMotorSetPosition armMotor;
+    public RevMotorSetPosition armMotor;
     //arm positions, one for intake, one for output
     double outPos = 7.83;
     double inPos = 13.12;

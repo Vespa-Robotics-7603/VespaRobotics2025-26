@@ -134,67 +134,6 @@ public class Elevator implements Subsystem {
         return runOnce(()->{moveElavatorWithSpeed(speed);});
     }
     
-    @Deprecated
-    public Command goToLevel2AndOutputTest(){
-        //test command chaining for outputting coral on level 2
-        Command f = new Command() {
-            @Override
-            public void execute(){
-                goToLevel(2);
-            }
-            
-            @Override
-            public boolean isFinished(){
-                double elevatorRot = upDownMotor.Motor.getEncoder().getPosition();
-                double wantedRot = upDownMotor.getRotationsFromPercent(l2);
-                double withinRange = 0.2;
-                if( 
-                    elevatorRot > wantedRot-withinRange
-                    && elevatorRot < wantedRot+withinRange
-                ){
-                    // within range, should end
-                    return false;
-                }
-                return true;
-            }
-        };
-        f.addRequirements(this);
-        
-        Command d = new Command() {
-            @Override
-            public void execute(){
-                // armOutput();
-            }
-            
-            @Override
-            public boolean isFinished(){
-                // double armRot = armMotor.Motor.getEncoder().getPosition();
-                // double wantedRot = armMotor.getRotationsFromPercent(l2);
-                // double withinRange = 0.2;
-                // if( 
-                //     armRot > wantedRot-withinRange
-                //     && armRot < wantedRot+withinRange
-                // ){
-                //     // within range, should end
-                //     return false;
-                // }
-                return true;
-            }
-            
-            @Override
-            public void end(boolean interrupted){
-                if(!interrupted){
-                    // CoralOut();
-                }
-            }
-        };
-        
-        
-        d.addRequirements(this);
-        
-        return f.andThen(d);
-    }
-
     public Command oneLevelUp(){
         return runOnce(()->{
             if(currentLevel < 3){
@@ -205,6 +144,7 @@ public class Elevator implements Subsystem {
             
         });
     }
+    
     public Command oneLevelDown(){
         return runOnce(()->{
             if(currentLevel > 0){
