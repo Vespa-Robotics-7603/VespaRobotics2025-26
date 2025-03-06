@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.*;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -33,6 +35,9 @@ public class RobotContainer {
     private SlewRateLimiter Yfilter = new SlewRateLimiter(5);
 
     /* Setting up bindings for necessary control of the swerve drive platform */
+    //private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    //        .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 5% deadband
+    //        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 5% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
@@ -52,10 +57,18 @@ public class RobotContainer {
     public final CoralPivot arm = new CoralPivot();
     public final CoralIntake intake = new CoralIntake();
     public final AlgaeIntake algaeIn = new AlgaeIntake();
+    
+    ;
+    
     public CageClimber climber;
 
     public RobotContainer() {
         configureBindings();
+        NamedCommands.registerCommand("Lift Elevator", elevator.goToLevelCommand(3));
+        NamedCommands.registerCommand("Deposite Coral", intake.CoralOutCommand());
+        NamedCommands.registerCommand("Elevator Intake Level", elevator.goToLevelCommand(1));
+        NamedCommands.registerCommand("Pickup Coral", intake.CoralInCommand());
+
     }
 
     private void configureBindings() {
@@ -117,6 +130,6 @@ public class RobotContainer {
         // This method loads the auto when it is called, however, it is recommended
         // to first load your paths/autos when code starts, then return the
         // pre-loaded auto/path
-        return new PathPlannerAuto("Complex Auto");
+        return new PathPlannerAuto("Far Left Auto");
     }
 }
