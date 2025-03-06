@@ -39,6 +39,7 @@ public class FieldCentricDrivetrain extends FieldCentric {
         return this;
     }
 
+    // TODO: fix this method
     public FieldCentricDrivetrain setInverted(Boolean isinverted) {
         this.isinverted = (isinverted) ? -1 : 1;
         return this;
@@ -46,6 +47,6 @@ public class FieldCentricDrivetrain extends FieldCentric {
 
     public FieldCentricDrivetrain() {
         super();
-        isinverted = 1;
+        isinverted = -1;
     }
 }
