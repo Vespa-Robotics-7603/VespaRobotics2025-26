@@ -17,6 +17,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Arm Output"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 5.0
@@ -29,9 +35,21 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Elevator Intake Level"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Intake"
           }
         },
         {
@@ -49,7 +67,19 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lift Elevator"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Output"
           }
         },
         {
@@ -59,9 +89,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Lift Elevator"
+            "waitTime": 3.0
           }
         },
         {
