@@ -6,7 +6,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 
 public class FieldCentricDrivetrain extends FieldCentric {
     private SlewRateLimiter xfilter = new SlewRateLimiter(10);
-    private SlewRateLimiter yfilter = new SlewRateLimiter(10);
+    private SlewRateLimiter yfilter = new SlewRateLimiter(10); 
     
     @Override
     public FieldCentric withVelocityX(double targetvelocity) {

@@ -29,18 +29,19 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.CoralPivot;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.FieldCentricDrivetrain;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-    private SlewRateLimiter Xfilter = new SlewRateLimiter(5);
-    private SlewRateLimiter Yfilter = new SlewRateLimiter(5);
+    //private SlewRateLimiter Xfilter = new SlewRateLimiter(5);
+    //private SlewRateLimiter Yfilter = new SlewRateLimiter(5);
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     //private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
     //        .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 5% deadband
     //        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    private final SwerveRequest.FieldCentric drive = new FieldCentricDrivetrain()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 5% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     //private final SwerveRequest.RobotCentric driveRob = new SwerveRequest.RobotCentric()
@@ -79,8 +80,8 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(Xfilter.calculate(joystick.getLeftY() * MaxSpeed)) // Drive forward with negative Y (forward)
-                    .withVelocityY(Yfilter.calculate(joystick.getLeftX() * MaxSpeed)) // Drive left with negative X (left)
+                drive.withVelocityX(joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
