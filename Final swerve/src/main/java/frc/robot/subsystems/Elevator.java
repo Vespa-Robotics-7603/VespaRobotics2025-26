@@ -24,25 +24,19 @@ public class Elevator implements Subsystem {
     
     RevMotorSetPosition upDownMotor;
     
-    //TODO get actual max rotation when build is done
-    // double maxRot = 100;
-    //TODO get percent height of levels wanted
-    double intakePos = 100;
     double l0 = 0;
-    double l1 = 300;
-    double l2 = 600;
-    double l3 = 900;
+    double l1 = 110;
+    double l2 = 210;
+    double l3 = 320;
     double[] levels = {l0,l1, l2, l3};
     int currentLevel = 0;
-    //arm positions, one for intake, one for output
-    // double[] armPositions = {0.2, 0.30};
     
     public Elevator(){
         upDownMotor = (RevMotorSetPosition) new RevMotorSetPosition(
             new SparkMax(2, MotorType.kBrushless),
              true,
              levels
-        ).setMaxRot(1050)//TODO get actual max rotation
+        ).setMaxRot(325)
         .setMinRot(-10);
         
         SparkMaxConfig config = new SparkMaxConfig();
@@ -54,7 +48,7 @@ public class Elevator implements Subsystem {
             .velocityConversionFactor(1.0/60.0);//Keep in rotaion per minute (ew) by default
         config.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(1.2, 0.0, 0.0);
+            .pid(5, 0.0, 0);
             
         upDownMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -101,7 +95,7 @@ public class Elevator implements Subsystem {
             if(currentLevel < 3){
                 currentLevel++;
             }
-            System.out.println("currentLevel");
+            System.out.println("currentLevel UP to:"+currentLevel);
             goToLevel(currentLevel);
             
         });
@@ -111,6 +105,8 @@ public class Elevator implements Subsystem {
         return runOnce(()->{
             if(currentLevel > 0){
                 currentLevel--;
+                System.out.println("currentLevel Down to:"+currentLevel);
+
             }
             goToLevel(currentLevel);
         });

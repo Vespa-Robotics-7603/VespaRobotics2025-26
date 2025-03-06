@@ -8,8 +8,6 @@ public class FieldCentricDrivetrain extends FieldCentric {
     private SlewRateLimiter xfilter = new SlewRateLimiter(10);
     private SlewRateLimiter yfilter = new SlewRateLimiter(10); 
     
-    // This class modifies withVelocityX and withVelocityY to change in a smoothed manner.
-
     @Override
     public FieldCentric withVelocityX(double targetvelocity) {
         double filteredvelocity;
