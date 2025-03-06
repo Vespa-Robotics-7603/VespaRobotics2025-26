@@ -34,7 +34,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 5% deadband
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 5% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     //private final SwerveRequest.RobotCentric driveRob = new SwerveRequest.RobotCentric()
     //        .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -72,32 +72,34 @@ public class RobotContainer {
         
         CommandScheduler.getInstance().registerSubsystem(elevator,arm, intake, algaeIn);
         
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        ));
+        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
+        //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        // ));
         
-        Command upLel = Commands.parallel(elevator.oneLevelUp(), arm.toOutput());
-        Command dwnLel = Commands.parallel(elevator.oneLevelDown(), arm.toOutput());
-        Command inPos = Commands.parallel(elevator.toStart(), arm.toIntake());
+        //TODO, test parrallel
+        // Command upLel = Commands.parallel(elevator.oneLevelUp(), arm.toOutput());
+        // Command dwnLel = Commands.parallel(elevator.oneLevelDown(), arm.toOutput());
+        // Command inPos = Commands.parallel(elevator.toStart(), arm.toIntake());
         
         //D-PAD up= up one level AND arm is ready, down = down one level AND arm is ready
         // left = down to start AND arm is ready for intake
-        joystick.povUp().onTrue(upLel);
+        joystick.x().onTrue(Commands.print("HELLO!"));
         // joystick.povDown().onTrue(elevator.oneLevelDown());
-        joystick.povDown().onTrue(dwnLel);
-        joystick.povLeft().onTrue(inPos);
+        joystick.y().onTrue(elevator.oneLevelDown());
+        // joystick.povLeft().onTrue(elevator.toStart());
         
         // joystick.leftBumper().onTrue(arm.toOutput());
         // joystick.rightBumper().onTrue(arm.toIntake());
         // joystick.x().onTrue(elevator.toStart());
-        
-        joystick.leftTrigger().onTrue(intake.CoralInCommand());
-        joystick.rightTrigger().onTrue(intake.CoralOutCommand());
-        
-        joystick.x().onTrue(algaeIn.AlgaeInCommand());
-        joystick.y().onTrue(algaeIn.AlgaeOutCommand());
-        joystick.x().or(joystick.y()).onFalse(algaeIn.AlgaeStopCommand());
+        // elevator.oneLevelUp();
+        // joystick.leftTrigger().onTrue(elevator.oneLevelUp());
+        // joystick.rightTrigger().onTrue(elevator.oneLevelDown());
+        joystick.povUp().onTrue(elevator.oneLevelUp());
+        joystick.povDown().onTrue(elevator.oneLevelDown());
+        // joystick.x().onTrue(algaeIn.AlgaeInCommand());
+        // joystick.y().onTrue(algaeIn.AlgaeOutCommand());
+        // joystick.x().or(joystick.y()).onFalse(algaeIn.AlgaeStopCommand());
         
 
         // Run SysId routines when holding back/start and X/Y.
