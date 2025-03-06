@@ -40,7 +40,9 @@ public class AlgaeIntake implements Subsystem {
     }
     
     public Command AlgaeInCommand(){
-        return runOnce(this::AlgaeIn);
+        return runOnce(()->{
+            AlgaeIn();
+        });
     }
     
     public Command AlgaeOutCommand(){

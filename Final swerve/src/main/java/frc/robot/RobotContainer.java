@@ -61,9 +61,7 @@ public class RobotContainer {
     public final CoralIntake intake = new CoralIntake();
     public final AlgaeIntake algaeIn = new AlgaeIntake();
     
-    ;
-    
-    public CageClimber climber;
+    public CageClimber climber = new CageClimber();
 
     public RobotContainer() {
         configureBindings();

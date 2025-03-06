@@ -23,11 +23,12 @@ public class Elevator implements Subsystem {
     }
     
     RevMotorSetPosition upDownMotor;
-    
+
     double l0 = 0;
     double l1 = 110;
     double l2 = 210;
     double l3 = 320;
+    double intake = 130;
     double[] levels = {l0,l1, l2, l3};
     int currentLevel = 0;
     
@@ -123,6 +124,11 @@ public class Elevator implements Subsystem {
     public Command RunCommandToDoThing(){
         return run(()->{
             //spin I guess
+        });
+    }
+    public Command toIntake(){
+        return runOnce(() ->{
+            upDownMotor.goToRotation(intake);
         });
     }
 }

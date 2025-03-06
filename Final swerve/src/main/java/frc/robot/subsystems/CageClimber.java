@@ -31,10 +31,10 @@ public class CageClimber implements Subsystem{
         footMotor = new RevMotor(
             new SparkMax(5, MotorType.kBrushless), true
         ).setMaxRot(20)
-        .setMinRot(0);
+        .setMinRot(-1);
         
         config
-            .inverted(true)
+            .inverted(false)
             .idleMode(IdleMode.kBrake);
         config.encoder
             .positionConversionFactor(1)//keeping in rotations
