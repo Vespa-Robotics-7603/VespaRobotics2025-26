@@ -70,8 +70,9 @@ public class RobotContainer {
         joystick.rightTrigger().onTrue(elevator.oneLevelUp());
         joystick.leftTrigger().onTrue(elevator.oneLevelDown());
         joystick.leftBumper().onTrue(arm.toOutput());
+        joystick.rightBumper().onTrue(arm.toIntake());
         joystick.x().onTrue(elevator.toStart());
-        
+
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));

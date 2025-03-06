@@ -19,8 +19,8 @@ public class CoralPivot implements Subsystem{
     
     RevMotorSetPosition armMotor;
     //arm positions, one for intake, one for output
-    double outPos = 6.5;
-    double inPos = 10;
+    double outPos = 7.83;
+    double inPos = 13.12;
     // double[] armPositions = {outPos, inPos};
     
     public CoralPivot(){
@@ -41,7 +41,7 @@ public class CoralPivot implements Subsystem{
             .velocityConversionFactor(1.0/60.0);// convert to rotations per second
         configArm.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(1.0, 0.0, 0.0)
+            .pid(0.05, 0.0, 0.0)
             .maxMotion.maxVelocity(2);
 
             
