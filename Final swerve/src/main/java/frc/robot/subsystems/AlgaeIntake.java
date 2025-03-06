@@ -9,16 +9,19 @@ import frc.robot.SwerveUtils.RevMotor;
 public class AlgaeIntake implements Subsystem {
     RevMotor algeaMotor;
     
+    double algaeInSpeed = 0.3;
+    double algaeOutSpeed =-0.3;
+    
     public AlgaeIntake(){
         
         algeaMotor = new RevMotor(4, MotorType.kBrushless);
     }
     
     public void AlgaeIn(){
-        algeaMotor.setSpeed(0.3);
+        algeaMotor.setSpeed(algaeInSpeed);
     }
     public void AlgaeOut(){
-        algeaMotor.setSpeed(-0.3);
+        algeaMotor.setSpeed(algaeOutSpeed);
     }
     
     @Override

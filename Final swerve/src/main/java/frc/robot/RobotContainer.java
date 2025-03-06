@@ -18,7 +18,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.CageClimber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.CoralPivot;
 import frc.robot.subsystems.Elevator;
 
@@ -42,9 +45,13 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
+    //SUBSYSTEMS
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final Elevator elevator = new Elevator();
     public final CoralPivot arm = new CoralPivot();
+    public final CoralIntake intake = new CoralIntake();
+    public final AlgaeIntake algaeIn = new AlgaeIntake();
+    public CageClimber climber;
 
     public RobotContainer() {
         configureBindings();
@@ -61,12 +68,13 @@ public class RobotContainer {
                     .withRotationalRate(joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
+        
+        CommandScheduler.getInstance().registerSubsystem(elevator,arm, intake, algaeIn);
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
-        CommandScheduler.getInstance().registerSubsystem(elevator,arm);
         joystick.rightTrigger().onTrue(elevator.oneLevelUp());
         joystick.leftTrigger().onTrue(elevator.oneLevelDown());
         joystick.leftBumper().onTrue(arm.toOutput());
