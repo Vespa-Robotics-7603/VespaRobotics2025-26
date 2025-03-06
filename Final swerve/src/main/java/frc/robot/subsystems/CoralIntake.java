@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 //this gives me an error so I can't look at it's methods, but it builds
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -52,16 +54,20 @@ public class CoralIntake implements Subsystem {
         intakeMotor.set(ControlMode.PercentOutput, turnOutSpeed);
     }
     
+    public void CoralStop() {
+        intakeMotor.set(ControlMode.PercentOutput, 0);
+    }
+
     @Override
     public void periodic(){
         // intakeMotor.set(controlM, refVal);
     }
     
     public Command CoralInCommand(){
-        return runOnce(this::CoralIn);
+        return Commands.sequence(runOnce(this::CoralIn), new WaitCommand(0.5), runOnce(this::CoralStop));
     }
     
     public Command CoralOutCommand(){
-        return runOnce(this::CoralOut);
+        return Commands.sequence(runOnce(this::CoralOut), new WaitCommand(0.5), runOnce(this::CoralStop));
     }
 }

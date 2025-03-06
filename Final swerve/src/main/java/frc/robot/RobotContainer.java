@@ -84,9 +84,9 @@ public class RobotContainer {
         
         //D-PAD up= up one level AND arm is ready, down = down one level AND arm is ready
         // left = down to start AND arm is ready for intake
-        joystick.x().onTrue(Commands.print("HELLO!"));
+        joystick.x().onTrue(intake.CoralInCommand());
         // joystick.povDown().onTrue(elevator.oneLevelDown());
-        joystick.y().onTrue(elevator.oneLevelDown());
+        joystick.y().onTrue(intake.CoralOutCommand());
         // joystick.povLeft().onTrue(elevator.toStart());
         
         // joystick.leftBumper().onTrue(arm.toOutput());
