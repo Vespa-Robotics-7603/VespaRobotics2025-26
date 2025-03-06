@@ -16,8 +16,13 @@ import frc.robot.SwerveUtils.RevMotor.RevMotorSetPosition;
 
 public class Elevator implements Subsystem {
     
-    RevMotorSetPosition upDownMotor;
+    public static Elevator singleInst;
+    public static Elevator getInst(){
+        if (singleInst == null) singleInst = new Elevator();
+        return singleInst;
+    }
     
+    RevMotorSetPosition upDownMotor;
     
     //TODO get actual max rotation when build is done
     // double maxRot = 100;
@@ -52,49 +57,6 @@ public class Elevator implements Subsystem {
             .pid(1.2, 0.0, 0.0);
             
         upDownMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
-        // SparkMaxConfig configArm = new SparkMaxConfig();
-        // //TODO, find device id
-        // armMotor = (RevMotorSetPosition) new RevMotorSetPosition(
-        //     new SparkMax(1, MotorType.kBrushless),
-        //      true,
-        //      armPositions
-        // ).setMaxRot(100)//TODO get actual max rotation
-        // .setMinRot(1);
-        
-        // config
-        //     .inverted(false)
-        //     .idleMode(IdleMode.kBrake);
-        // config.encoder
-        //     .positionConversionFactor(1)//keeping in rotations
-        //     .velocityConversionFactor(1.0/60.0);// convert to rotations per second
-        // config.closedLoop
-        //     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        //     //TODO fix these
-        //     .pid(1.0, 0.0, 0.0);
-            
-        // armMotor.configure(configArm, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
-        // SparkMaxConfig configIntake = new SparkMaxConfig();
-        // //TODO, find device id
-        // coralIntakeMotor = new RevMotor(
-        //     new SparkMax(2, MotorType.kBrushless),
-        //      true
-        // ).setMaxRot(Double.POSITIVE_INFINITY)//TODO get actual max rotation
-        // .setMinRot(Double.NEGATIVE_INFINITY);
-        
-        // config
-        //     .inverted(false)
-        //     .idleMode(IdleMode.kBrake);
-        // config.encoder
-        //     .positionConversionFactor(1)//keeping in rotations
-        //     .velocityConversionFactor(1.0/60.0);// convert to rotations per second
-        // config.closedLoop
-        //     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        //     //TODO fix these
-        //     .pid(1.0, 0.0, 0.0);
-            
-        // coralIntakeMotor.configure(configIntake, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     
     
@@ -139,7 +101,7 @@ public class Elevator implements Subsystem {
             if(currentLevel < 3){
                 currentLevel++;
             }
-            
+            System.out.println("currentLevel");
             goToLevel(currentLevel);
             
         });

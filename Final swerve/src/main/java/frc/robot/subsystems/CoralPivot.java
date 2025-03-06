@@ -16,6 +16,11 @@ import frc.robot.SwerveUtils.RevMotor.RevMotorSetPosition;
 
 public class CoralPivot implements Subsystem{
     
+    public static CoralPivot singleInst;
+    public static CoralPivot getInst(){
+        if (singleInst == null) singleInst = new CoralPivot();
+        return singleInst;
+    }
     
     public RevMotorSetPosition armMotor;
     //arm positions, one for intake, one for output
@@ -61,7 +66,7 @@ public class CoralPivot implements Subsystem{
     @Override
     public void periodic(){
         armMotor.resetReference();
-        System.out.println(armMotor.Motor.getEncoder().getPosition());
+        // System.out.println(armMotor.Motor.getEncoder().getPosition());
     }
     public Command toOutput(){
         return runOnce(() -> {

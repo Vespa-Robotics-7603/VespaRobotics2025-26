@@ -16,6 +16,12 @@ import frc.robot.SwerveUtils.RevMotor;
 //TODO: MAKE SURE THIS STOPS!!!!!
 public class CageClimber implements Subsystem{
     
+    public static CageClimber singleInst;
+    public static CageClimber getInst(){
+        if (singleInst == null) singleInst = new CageClimber();
+        return singleInst;
+    }
+    
     RevMotor footMotor;
     
     public CageClimber(){

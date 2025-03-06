@@ -7,6 +7,13 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.SwerveUtils.RevMotor;
 
 public class AlgaeIntake implements Subsystem {
+    
+    public static AlgaeIntake singleInst;
+    public static AlgaeIntake getInst(){
+        if (singleInst == null) singleInst = new AlgaeIntake();
+        return singleInst;
+    }
+    
     RevMotor algeaMotor;
     
     double algaeInSpeed = 0.3;
