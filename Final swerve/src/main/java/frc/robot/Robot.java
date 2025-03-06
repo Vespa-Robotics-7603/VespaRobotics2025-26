@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
-    this.teleopExit();
+    // this.teleopExit();
   }
 
   @Override
@@ -61,13 +61,13 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {}
 
-  Command end = Commands.parallel(
-    m_robotContainer.elevator.toStart(),
-    m_robotContainer.arm.armMotor.goToStartCommand()
-  );
+//   Command end = Commands.parallel(
+//     m_robotContainer.elevator.toStart(),
+//     m_robotContainer.arm.armMotor.goToStartCommand()
+//   );
   @Override
   public void teleopExit() {
-    CommandScheduler.getInstance().schedule(end);
+    // CommandScheduler.getInstance().schedule(end);
   }
 
   @Override
