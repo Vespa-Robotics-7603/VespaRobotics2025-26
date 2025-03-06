@@ -24,11 +24,11 @@ public class Elevator implements Subsystem {
     
     RevMotorSetPosition upDownMotor;
 
-    double l0 = 0;
+    double l0 = 5;
     double l1 = 110;
     double l2 = 210;
     double l3 = 320;
-    double intake = 130;
+    double intake = 5;
     double[] levels = {l0,l1, l2, l3};
     int currentLevel = 0;
     

@@ -66,7 +66,9 @@ public class RobotContainer {
     public RobotContainer() {
         configureBindings();
         NamedCommands.registerCommand("Lift Elevator", elevator.goToLevelCommand(3));
+        NamedCommands.registerCommand("Arm Intake", arm.toIntake());
         NamedCommands.registerCommand("Deposite Coral", intake.CoralOutCommand());
+        NamedCommands.registerCommand("Arm Output",  arm.toOutput());
         NamedCommands.registerCommand("Elevator Intake Level", elevator.goToLevelCommand(1));
         NamedCommands.registerCommand("Pickup Coral", intake.CoralInCommand());
 
@@ -88,7 +90,7 @@ public class RobotContainer {
         
         Command upLel = Commands.parallel(elevator.oneLevelUp(), arm.toOutput());
         Command dwnLel = Commands.parallel(elevator.oneLevelDown(), arm.toOutput());
-        Command inPos = Commands.parallel(elevator.toStart(), arm.toIntake());
+        Command inPos = Commands.parallel(elevator.toIntake(), arm.toIntake());
 
 
         algaeIn.setDefaultCommand(algaeIn.AlgaeStopCommand());
