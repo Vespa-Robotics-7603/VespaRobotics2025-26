@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Optional;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -13,7 +15,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
-
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -116,6 +119,16 @@ public class RobotContainer {
         // This method loads the auto when it is called, however, it is recommended
         // to first load your paths/autos when code starts, then return the
         // pre-loaded auto/path
+        Optional<Alliance> al = DriverStation.getAlliance();
+        if(al.isPresent()){
+            if(al.get() == Alliance.Blue){
+               return new PathPlannerAuto("Far Left Auto");
+            }
+            if(al.get() == Alliance.Red){
+                //TODO create a new path for red
+                return null;
+            }
+        }
         return new PathPlannerAuto("Far Left Auto");
     }
 }

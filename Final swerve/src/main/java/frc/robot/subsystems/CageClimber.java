@@ -30,7 +30,7 @@ public class CageClimber implements Subsystem{
         
         footMotor = new RevMotor(
             new SparkMax(5, MotorType.kBrushless), true
-        ).setMaxRot(100)
+        ).setMaxRot(20)
         .setMinRot(0);
         
         config
