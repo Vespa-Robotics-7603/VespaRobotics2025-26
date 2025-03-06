@@ -4,6 +4,11 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -200,6 +205,10 @@ public class RevMotor {
     
     public void goToStart(){
         goToRotation(0);
+    }
+    
+    public Command goToStartCommand(Subsystem... requirements){
+        return Commands.runOnce(this::goToStart, requirements);
     }
     
     public double getMaxRot() {

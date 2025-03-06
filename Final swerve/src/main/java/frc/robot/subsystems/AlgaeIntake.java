@@ -23,6 +23,9 @@ public class AlgaeIntake implements Subsystem {
     public void AlgaeOut(){
         algeaMotor.setSpeed(algaeOutSpeed);
     }
+    public void Stop(){
+        algeaMotor.setSpeed(0);
+    }
     
     @Override
     public void periodic(){
@@ -35,5 +38,9 @@ public class AlgaeIntake implements Subsystem {
     
     public Command AlgaeOutCommand(){
         return runOnce(this::AlgaeOut);
+    }
+    
+    public Command AlgaeStopCommand(){
+        return runOnce(this::Stop);
     }
 }
