@@ -19,7 +19,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 3.0
           }
         },
         {
@@ -29,15 +29,15 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "FarLeftTwoPath"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Elevator Intake Level"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FarLeftTwoPath"
           }
         },
         {
