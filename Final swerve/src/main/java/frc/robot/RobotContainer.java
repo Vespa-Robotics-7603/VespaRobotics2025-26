@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Optional;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -13,7 +15,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
-
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -58,14 +61,14 @@ public class RobotContainer {
     public final CoralIntake intake = new CoralIntake();
     public final AlgaeIntake algaeIn = new AlgaeIntake();
     
-    ;
-    
-    public CageClimber climber;
+    public CageClimber climber = new CageClimber();
 
     public RobotContainer() {
         configureBindings();
         NamedCommands.registerCommand("Lift Elevator", elevator.goToLevelCommand(3));
+        NamedCommands.registerCommand("Arm Intake", arm.toIntake());
         NamedCommands.registerCommand("Deposite Coral", intake.CoralOutCommand());
+        NamedCommands.registerCommand("Arm Output",  arm.toOutput());
         NamedCommands.registerCommand("Elevator Intake Level", elevator.goToLevelCommand(1));
         NamedCommands.registerCommand("Pickup Coral", intake.CoralInCommand());
 
@@ -87,7 +90,7 @@ public class RobotContainer {
         
         Command upLel = Commands.parallel(elevator.oneLevelUp(), arm.toOutput());
         Command dwnLel = Commands.parallel(elevator.oneLevelDown(), arm.toOutput());
-        Command inPos = Commands.parallel(elevator.toStart(), arm.toIntake());
+        Command inPos = Commands.parallel(elevator.toIntake(), arm.toIntake());
 
 
         algaeIn.setDefaultCommand(algaeIn.AlgaeStopCommand());
@@ -117,6 +120,16 @@ public class RobotContainer {
         // This method loads the auto when it is called, however, it is recommended
         // to first load your paths/autos when code starts, then return the
         // pre-loaded auto/path
+        Optional<Alliance> al = DriverStation.getAlliance();
+        if(al.isPresent()){
+            if(al.get() == Alliance.Blue){
+               return new PathPlannerAuto("Far Left Auto");
+            }
+            if(al.get() == Alliance.Red){
+                //TODO create a new path for red
+                return null;
+            }
+        }
         return new PathPlannerAuto("Far Left Auto");
     }
 }

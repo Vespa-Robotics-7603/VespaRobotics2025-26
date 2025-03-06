@@ -25,29 +25,32 @@ public class AlgaeIntake implements Subsystem {
     }
     
     public void AlgaeIn(){
-        algeaMotor.setSpeed(algaeInSpeed);
+        algeaMotor.Motor.set(algaeInSpeed);
     }
     public void AlgaeOut(){
-        algeaMotor.setSpeed(algaeOutSpeed);
+        algeaMotor.Motor.set(algaeOutSpeed);
     }
     public void Stop(){
-        algeaMotor.setSpeed(0);
+        algeaMotor.Motor.set(0);;
     }
     
     @Override
     public void periodic(){
-        algeaMotor.resetReference();
+        //algeaMotor.resetReference();
     }
     
     public Command AlgaeInCommand(){
-        return runOnce(this::AlgaeIn);
+        return run(()->{
+            System.out.println("Algea In");
+            AlgaeIn();
+        });
     }
     
     public Command AlgaeOutCommand(){
-        return runOnce(this::AlgaeOut);
+        return run(this::AlgaeOut);
     }
     
     public Command AlgaeStopCommand(){
-        return runOnce(this::Stop);
+        return run(this::Stop);
     }
 }
