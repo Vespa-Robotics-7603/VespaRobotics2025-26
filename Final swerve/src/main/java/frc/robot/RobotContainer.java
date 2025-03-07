@@ -86,7 +86,7 @@ public class RobotContainer {
             )
         );
         
-        CommandScheduler.getInstance().registerSubsystem(elevator,arm, intake, algaeIn);
+        CommandScheduler.getInstance().registerSubsystem(elevator,arm, intake, algaeIn, climber);
         
         Command upLel = Commands.parallel(elevator.oneLevelUp(), arm.toOutput());
         Command dwnLel = Commands.parallel(elevator.oneLevelDown(), arm.toOutput());
@@ -97,6 +97,7 @@ public class RobotContainer {
 
         joystick.x().onTrue(intake.CoralInCommand());
         joystick.y().onTrue(intake.CoralOutCommand());
+        joystick.b().onTrue(climber.climber());
 
         joystick.povUp().onTrue(upLel);
         joystick.povDown().onTrue(dwnLel);
@@ -117,19 +118,19 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // This method loads the auto when it is called, however, it is recommended
-        // to first load your paths/autos when code starts, then return the
-        // pre-loaded auto/path
+        //This method loads the auto when it is called, however, it is recommended
+        //to first load your paths/autos when code starts, then return the
+        //pre-loaded auto/path
         Optional<Alliance> al = DriverStation.getAlliance();
         if(al.isPresent()){
             if(al.get() == Alliance.Blue){
                return new PathPlannerAuto("Far Left Auto");
             }
             if(al.get() == Alliance.Red){
-                //TODO create a new path for red
-                return null;
+                return new PathPlannerAuto("Far Left Auto RED");
             }
         }
         return new PathPlannerAuto("Far Left Auto");
+        //return new PathPlannerAuto("Just Jerk");
     }
 }

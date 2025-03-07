@@ -15,7 +15,7 @@ import frc.robot.SwerveUtils.RevMotor;
 
 //TODO: MAKE SURE THIS STOPS!!!!!
 public class CageClimber implements Subsystem{
-    
+    boolean climbed = false;
     public static CageClimber singleInst;
     public static CageClimber getInst(){
         if (singleInst == null) singleInst = new CageClimber();
@@ -25,12 +25,13 @@ public class CageClimber implements Subsystem{
     RevMotor footMotor;
     
     public CageClimber(){
-        
+        //MAX CLIMBER MOTOR 117.66
+
         SparkMaxConfig config = new SparkMaxConfig();
         
         footMotor = new RevMotor(
             new SparkMax(5, MotorType.kBrushless), true
-        ).setMaxRot(20)
+        ).setMaxRot(115)
         .setMinRot(-1);
         
         config
@@ -47,8 +48,8 @@ public class CageClimber implements Subsystem{
         footMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     
-    public void climb(){
-        footMotor.goToRotationPercent(0.01);
+    public void down(){
+        footMotor.goToStart();
     }
     public void up(){
         footMotor.goToRotationPercent(0.99);
@@ -60,11 +61,23 @@ public class CageClimber implements Subsystem{
     }
     
     public Command climbCommand(){
-        return runOnce(this::climb);
+        return runOnce(this::down);
     }
     
     public Command upCommand(){
         return runOnce(this::up);
+    }
+    public Command climber(){
+        return runOnce(() -> {
+            if(!climbed){
+                down();
+                climbed = true;
+            }else {
+                up();
+                climbed = false;
+
+            }
+        });
     }
     
 }
