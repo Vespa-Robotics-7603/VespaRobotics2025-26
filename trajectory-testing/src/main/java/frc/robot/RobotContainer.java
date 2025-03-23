@@ -108,7 +108,5 @@ public class RobotContainer {
 
         // Move by 1 metre along both the X and Y at a targeted speed of
         // 3 m/s, a targeted acceleration of 3 m/s^2, and a targeted rotation of PI/2 radians respectively.
-        TrajectoryTarget2d targetinfo = new TrajectoryTarget2d(1, 1, Math.PI / 2);
-        return new TrajectoryFollower(drivetrain).moveToTarget(3, 3, targetinfo);
     }
 }

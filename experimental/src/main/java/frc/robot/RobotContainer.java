@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.SwerveUtils.TrajectoryTarget2d;
 //import frc.robot.commands.FollowAprilTagCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Algae;
@@ -24,6 +25,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.CoralPivot;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.TrajectoryFollower;
 
 // import frc.robot.subsystems.Vision;
 
@@ -106,7 +108,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         //return Commands.print("No autonomous command configured");
-        // return visionSubsystem.followAprilTag();
-        return null;
+        TrajectoryTarget2d targetinfo = new TrajectoryTarget2d(1, 1, Math.PI / 2);
+        return new TrajectoryFollower(drivetrain).moveToTarget(3, 3, targetinfo);
     }
 }
