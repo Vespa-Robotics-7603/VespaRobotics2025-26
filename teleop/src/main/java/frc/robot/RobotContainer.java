@@ -19,9 +19,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 //import frc.robot.commands.FollowAprilTagCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Algae;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.CoralBucket;
+import frc.robot.subsystems.CoralPivot;
+import frc.robot.subsystems.Elevator;
 
-import frc.robot.subsystems.Vision;
+// import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -38,7 +42,14 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
+    // Subsystems
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final Elevator elevator = new Elevator();
+    public final CoralPivot arm = new CoralPivot();
+    public final CoralBucket coral = new CoralBucket();
+    public final Algae algae = new Algae();
+
+    // private final Vision visionSubsystem = new Vision(drivetrain);
 
     public RobotContainer() {
         configureBindings();
@@ -55,6 +66,21 @@ public class RobotContainer {
                     .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
+        
+        algae.setDefaultCommand(algae.AlgeaStopCommand());
+        coral.setDefaultCommand(coral.holdCom());
+
+        CommandScheduler.getInstance().registerSubsystem(elevator, arm, coral, algae);
+        
+        joystick.povUp().onTrue(elevator.oneLevelUp());
+        joystick.povDown().onTrue(elevator.oneLevelDown());
+
+        joystick.povLeft().whileTrue(arm.toIntake());
+        joystick.povRight().whileTrue(arm.toOutput());
+        
+        joystick.rightTrigger().whileTrue(coral.CoralInCom()); //todo: make this dynamic and not a button
+        joystick.leftTrigger().whileTrue(coral.CoralOutCom());
+
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
@@ -67,18 +93,20 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+        joystick.rightBumper().whileTrue(algae.AlgaeIn());
+        joystick.leftBumper().whileTrue(algae.AlgaeOut());
+
+        // reset the field-centric heading on menu press
+        joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        joystick.start().onTrue(Commands.print("drive train reset! :) so gracious! so professional!"));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
-    private Vision cam = new Vision(drivetrain);
-
     public Command getAutonomousCommand() {
         //return Commands.print("No autonomous command configured");
-        return cam.APT();
-       //return new PathPlannerAuto("Test Auto but better");
-        
+        // return visionSubsystem.followAprilTag();
+        return null;
     }
 }
