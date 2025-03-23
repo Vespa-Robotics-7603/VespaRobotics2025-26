@@ -14,25 +14,23 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.SwerveUtils.RevMotor.RevMotorSetPosition;
 
+import static frc.robot.constants.CoralConstants.*;
+
 public class CoralPivot implements Subsystem{
     
     
     RevMotorSetPosition armMotor;
-    //arm positions, one for intake, one for output
-    double outPos = 6.4;
-    double inPos = 13;
-    double currentposition = 0;
-    // double[] armPositions = {outPos, inPos};
+    double currentPos = 0;
     
     public CoralPivot(){
         SparkMaxConfig configArm = new SparkMaxConfig();
         
         armMotor = (RevMotorSetPosition) new RevMotorSetPosition(
             new SparkMax(3, MotorType.kBrushless),
-             true,
-             outPos, inPos
-        ).setMaxRot(13)//TODO get actual max rotation
-        .setMinRot(-1);
+            true,
+            OUT_POS, IN_POS)
+        .setMaxRot(MAX_ROT)
+        .setMinRot(MIN_ROT);
         
         configArm
             .inverted(true)
@@ -60,10 +58,9 @@ public class CoralPivot implements Subsystem{
     }
 
     public void incrementHeight(double height) {
-        // TODO: bounds check
-        currentposition += height;
-        System.out.println("New target coral arm position: " + currentposition);
-        armMotor.goToRotation(currentposition);
+        currentPos += height;
+        System.out.println("New target coral arm position: " + currentPos);
+        armMotor.goToRotation(currentPos);
     }
     
     public void armWithSpeed(double speed){
@@ -95,7 +92,7 @@ public class CoralPivot implements Subsystem{
     }
     
     public Command setSpeed(double speed){
-        return runOnce(()->{
+        return runOnce(() -> {
             this.setSpeed(speed);
         });
     }

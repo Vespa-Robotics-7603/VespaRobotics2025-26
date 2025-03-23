@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.SwerveUtils.RevMotor;
 
-import frc.robot.constants.AlgaeConstants;
+import static frc.robot.constants.AlgaeConstants.*;
 
 public class Algae implements Subsystem { // i love big green balls
     RevMotor algaeMotor;
@@ -20,13 +20,13 @@ public class Algae implements Subsystem { // i love big green balls
     
     public Command AlgaeIn(){
         return run(()->{
-            algaeMotor.Motor.set(AlgaeConstants.ALGAE_IN);
+            algaeMotor.Motor.set(ALGAE_IN);
         });
     }
     
     public Command AlgaeOut(){
         return run(() -> {
-            algaeMotor.Motor.set(AlgaeConstants.ALGAE_OUT);
+            algaeMotor.Motor.set(ALGAE_OUT);
         });
     }
     
