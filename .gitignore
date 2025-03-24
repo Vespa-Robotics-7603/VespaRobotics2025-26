@@ -1,0 +1,8 @@
+*.MF
+*.bin
+*.so
+*.10
+*.properties
+*.lock
+*.probe
+*.class
