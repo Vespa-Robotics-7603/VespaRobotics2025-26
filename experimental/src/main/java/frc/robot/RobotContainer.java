@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -149,6 +150,9 @@ public class RobotContainer {
     }
     
     public Command changeCurrentModeTo(short newValue){
+        NamedCommands.registerCommand("Elevator Up", elevator.toAutoOutput());
+        NamedCommands.registerCommand("Coral Out", coral.CoralOutCom());
+        NamedCommands.registerCommand("Roll Off", algae.RollOffCommand());
         return Commands.runOnce(()->{
             CurrentMode=newValue;
             System.out.println("Mode = " + CurrentMode);

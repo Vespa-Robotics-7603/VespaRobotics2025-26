@@ -7,7 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": null
+            "name": "Roll Off"
           }
         },
         {
@@ -25,7 +25,19 @@
         {
           "type": "named",
           "data": {
-            "name": null
+            "name": "Elevator Up"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 4.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Coral Out"
           }
         }
       ]
