@@ -46,7 +46,7 @@ public class Algae implements Subsystem { // i love big green balls
     public void stop(){
         algaeMotor.Motor.set(0);
     }
-    public Command AlgeaStopCommand(){
+    public Command AlgaeStopCommand(){
         return run(this::stop);
     }
 }

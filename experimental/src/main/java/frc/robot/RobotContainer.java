@@ -74,7 +74,7 @@ public class RobotContainer {
             )
         );
         
-        algae.setDefaultCommand(algae.AlgeaStopCommand());
+        algae.setDefaultCommand(algae.AlgaeStopCommand());
         coral.setDefaultCommand(coral.holdCom());
 
         CommandScheduler.getInstance().registerSubsystem(elevator, arm, coral, algae);
