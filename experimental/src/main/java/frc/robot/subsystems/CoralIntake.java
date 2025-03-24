@@ -18,9 +18,20 @@ import java.util.function.Supplier;
 
 public class CoralIntake implements Subsystem {
     
+    private static CoralIntake singleInst;
+    /**
+     * Returns the instance of this subsystem.
+     * <p>This is to stop multiple instances of motors 
+     * and allow better access to the subsystem</p>
+     * @return the instance.
+      */
+    public static CoralIntake getInst(){
+        return (singleInst == null)? new CoralIntake(): singleInst;
+    }
+    
     VictorSPX intakeMotor = new VictorSPX(9);
     
-    public CoralIntake(){}
+    CoralIntake(){}
     
     public void CoralIn(){
         intakeMotor.set(ControlMode.PercentOutput, TURN_IN_ROT);

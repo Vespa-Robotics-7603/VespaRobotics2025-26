@@ -18,11 +18,22 @@ import static frc.robot.constants.CoralConstants.*;
 
 public class CoralPivot implements Subsystem{
     
+    private static CoralPivot singleInst;
+    /**
+     * Returns the instance of this subsystem.
+     * <p>This is to stop multiple instances of motors 
+     * and allow better access to the subsystem</p>
+     * @return the instance.
+      */
+    public static CoralPivot getInst(){
+        return (singleInst == null)? new CoralPivot(): singleInst;
+    }
+    
     
     RevMotorSetPosition armMotor;
     double currentPos = 0;
     
-    public CoralPivot(){
+    CoralPivot(){
         SparkMaxConfig configArm = new SparkMaxConfig();
         
         armMotor = (RevMotorSetPosition) new RevMotorSetPosition(

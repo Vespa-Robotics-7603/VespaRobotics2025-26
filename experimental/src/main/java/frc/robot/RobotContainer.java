@@ -43,10 +43,10 @@ public class RobotContainer {
 
     // Subsystems
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    public final Elevator elevator = new Elevator();
-    public final CoralPivot arm = new CoralPivot();
-    public final CoralIntake coral = new CoralIntake();
-    public final Algae algae = new Algae();
+    public final Elevator elevator = Elevator.getInst();
+    public final CoralPivot arm = CoralPivot.getInst();
+    public final CoralIntake coral = CoralIntake.getInst();
+    public final Algae algae = Algae.getInst();
 
     // private final Vision visionSubsystem = new Vision(drivetrain);
 

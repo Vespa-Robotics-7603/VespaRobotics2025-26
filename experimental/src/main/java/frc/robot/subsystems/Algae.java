@@ -8,8 +8,21 @@ import frc.robot.SwerveUtils.RevMotor;
 import static frc.robot.constants.AlgaeConstants.*;
 
 public class Algae implements Subsystem { // i love big green balls
+    
+    private static Algae singleInst;
+    /**
+     * Returns the instance of this subsystem.
+     * <p>This is to stop multiple instances of motors 
+     * and allow better access to the subsystem</p>
+     * @return the instance.
+      */
+    public static Algae getInst(){
+        return (singleInst == null)? new Algae(): singleInst;
+    }
+    
     RevMotor algaeMotor;
-    public Algae() {
+    
+    Algae() {
         algaeMotor = new RevMotor(4, MotorType.kBrushless);
     }
     

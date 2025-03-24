@@ -17,13 +17,24 @@ import static frc.robot.constants.ElevatorConstants.*;
 
 public class Elevator implements Subsystem {
     
+    private static Elevator singleInst;
+    /**
+     * Returns the instance of this subsystem.
+     * <p>This is to stop multiple instances of motors 
+     * and allow better access to the subsystem</p>
+     * @return the instance.
+      */
+    public static Elevator getInst(){
+        return (singleInst == null)? new Elevator(): singleInst;
+    }
+    
     RevMotorSetPosition upDownMotor;
     
     int currentLevel = 0;
     
     double currentheight = 40;
 
-    public Elevator(){
+    Elevator(){
         upDownMotor = (RevMotorSetPosition) new RevMotorSetPosition(
             new SparkMax(2, MotorType.kBrushless),
              true,
