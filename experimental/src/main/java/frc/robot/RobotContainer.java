@@ -6,7 +6,11 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -47,6 +51,12 @@ public class RobotContainer {
     public final CoralPivot arm = CoralPivot.getInst();
     public final CoralIntake coral = CoralIntake.getInst();
     public final Algae algae = Algae.getInst();
+    
+    /** 
+     * The current mode of the controler
+     * (this allows for more bindings without another contorller) 
+     */
+    private short CurrentMode = 0;
 
     // private final Vision visionSubsystem = new Vision(drivetrain);
 
@@ -66,7 +76,7 @@ public class RobotContainer {
             )
         );
         
-        algae.setDefaultCommand(algae.AlgeaStopCommand());
+        algae.setDefaultCommand(algae.AlgaeStopCommand());
         coral.setDefaultCommand(coral.holdCom());
 
         CommandScheduler.getInstance().registerSubsystem(elevator, arm, coral, algae);
@@ -128,8 +138,26 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
+        NamedCommands.registerCommand("Elevator Up", elevator.toAutoOutput());
+        NamedCommands.registerCommand("Coral Out", coral.CoralOutCom());
+        NamedCommands.registerCommand("Roll Off", algae.RollOffCommand());
         //return Commands.print("No autonomous command configured");
-        TrajectoryTarget2d targetinfo = new TrajectoryTarget2d(1, 1, Math.PI / 2);
-        return new TrajectoryFollower(drivetrain).moveToTarget(3, 3, targetinfo);
+        // TrajectoryTarget2d targetinfo = new TrajectoryTarget2d(1, 1, Math.PI / 2);
+        // return new TrajectoryFollower(drivetrain).moveToTarget(3, 3, targetinfo);
+        return new PathPlannerAuto("1cM");
+    }
+    
+    /**
+     * To be used in with tiggers
+      */
+    public BooleanSupplier getIsModeEqualTo(short modeValue){
+        return ()->CurrentMode == modeValue;
+    }
+    
+    public Command changeCurrentModeTo(short newValue){
+        return Commands.runOnce(()->{
+            CurrentMode=newValue;
+            System.out.println("Mode = " + CurrentMode);
+        });
     }
 }

@@ -141,4 +141,8 @@ public class Elevator implements Subsystem {
         //subject to change it new input level is found
         return goToLevelCommand(0);
     }
+
+    public Command toAutoOutput(){
+        return goToLevelCommand(2);
+    }
 }

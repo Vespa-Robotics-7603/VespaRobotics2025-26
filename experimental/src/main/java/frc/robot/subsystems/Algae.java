@@ -2,7 +2,9 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.SwerveUtils.RevMotor;
 
 import static frc.robot.constants.AlgaeConstants.*;
@@ -46,7 +48,15 @@ public class Algae implements Subsystem { // i love big green balls
     public void stop(){
         algaeMotor.Motor.set(0);
     }
-    public Command AlgeaStopCommand(){
+    public Command AlgaeStopCommand(){
         return run(this::stop);
+    }
+    
+    public Command RollOffCommand(){
+        
+        return Commands.race(
+            AlgaeOut(),
+            new WaitCommand(5)
+        );
     }
 }

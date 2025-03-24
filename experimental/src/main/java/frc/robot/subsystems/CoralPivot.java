@@ -39,7 +39,7 @@ public class CoralPivot implements Subsystem{
         armMotor = (RevMotorSetPosition) new RevMotorSetPosition(
             new SparkMax(3, MotorType.kBrushless),
             true,
-            OUT_POS, IN_POS)
+            IN_POS, OUT_POS)
         .setMaxRot(MAX_ROT)
         .setMinRot(MIN_ROT);
         
