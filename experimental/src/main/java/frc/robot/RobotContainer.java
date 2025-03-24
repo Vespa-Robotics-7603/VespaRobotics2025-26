@@ -10,6 +10,7 @@ import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -137,9 +138,13 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
+        NamedCommands.registerCommand("Elevator Up", elevator.toAutoOutput());
+        NamedCommands.registerCommand("Coral Out", coral.CoralOutCom());
+        NamedCommands.registerCommand("Roll Off", algae.RollOffCommand());
         //return Commands.print("No autonomous command configured");
-        TrajectoryTarget2d targetinfo = new TrajectoryTarget2d(1, 1, Math.PI / 2);
-        return new TrajectoryFollower(drivetrain).moveToTarget(3, 3, targetinfo);
+        // TrajectoryTarget2d targetinfo = new TrajectoryTarget2d(1, 1, Math.PI / 2);
+        // return new TrajectoryFollower(drivetrain).moveToTarget(3, 3, targetinfo);
+        return new PathPlannerAuto("1cM");
     }
     
     /**
@@ -150,9 +155,6 @@ public class RobotContainer {
     }
     
     public Command changeCurrentModeTo(short newValue){
-        NamedCommands.registerCommand("Elevator Up", elevator.toAutoOutput());
-        NamedCommands.registerCommand("Coral Out", coral.CoralOutCom());
-        NamedCommands.registerCommand("Roll Off", algae.RollOffCommand());
         return Commands.runOnce(()->{
             CurrentMode=newValue;
             System.out.println("Mode = " + CurrentMode);
