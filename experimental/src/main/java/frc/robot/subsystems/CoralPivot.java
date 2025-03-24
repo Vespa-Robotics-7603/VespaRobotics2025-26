@@ -42,8 +42,6 @@ public class CoralPivot implements Subsystem{
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
             .pid(0.05, 0.0, 0.0)
             .maxMotion.maxVelocity(2);
-
-            
             
         armMotor.configure(configArm, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
@@ -53,7 +51,7 @@ public class CoralPivot implements Subsystem{
         armMotor.goToSetPosition(0);
     }
     
-    public void armOutput(int level){
+    public void armOutput(){
         armMotor.goToSetPosition(1);
     }
 
@@ -81,7 +79,7 @@ public class CoralPivot implements Subsystem{
 
     public Command toOutput(){
         return runOnce(() -> {
-            armOutput(0);
+            armOutput();
         });
     }
 

@@ -19,13 +19,8 @@ public class Elevator implements Subsystem {
     
     RevMotorSetPosition upDownMotor;
     
-    
-    //TODO get actual max rotation when build is done
-    // double maxRot = 100;
-    //TODO get percent height of levels wanted
     int currentLevel = 0;
-    //arm positions, one for intake, one for output
-    // double[] armPositions = {0.2, 0.30};
+    
     double currentheight = 40;
 
     public Elevator(){
@@ -61,7 +56,7 @@ public class Elevator implements Subsystem {
         upDownMotor.goToRotationPercent(percentHeight);
     }
     
-    // level must range between 1 and 3 inclusive
+    // level must range between 0 and 3 inclusive
     public void goToLevel(int level){
         upDownMotor.goToSetPosition(level);
     }
@@ -82,11 +77,8 @@ public class Elevator implements Subsystem {
     @Override
     public void periodic(){
         upDownMotor.resetReference();
-        // armMotor.resetReference();
-        // coralIntakeMotor.resetReference();
-        //System.out.println("Running Periodic");
-        // System.out.println("Elevator position: " + upDownMotor.Motor.getEncoder().getPosition());
     }
+    
     //Using run once here because the motor will continue to go to position/speed
     //it doesn't need to be called periodically, only when a change in motion is wanted
     public Command goToHeightPercentCommand(double percentHeight){
@@ -132,5 +124,10 @@ public class Elevator implements Subsystem {
             currentLevel = 0;
             upDownMotor.goToStart();
         });
+    }
+    
+    public Command toInputLevel(){
+        //subject to change it new input level is found
+        return goToLevelCommand(0);
     }
 }
