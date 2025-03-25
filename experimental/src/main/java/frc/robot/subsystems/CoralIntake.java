@@ -62,6 +62,11 @@ public class CoralIntake implements Subsystem {
     @Override
     public void periodic(){
         //intakeMotor.set(controlM, refVal);
+        /* Ethan = breakfast by half alive 
+         * Harley = BALLZ!
+         * Seysha = supper's ready by genisis
+         * -harley & ethan
+         */
     }
     public void CoralStop(){
         intakeMotor.set(ControlMode.PercentOutput, 0);
