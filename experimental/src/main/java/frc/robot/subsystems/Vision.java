@@ -5,11 +5,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.VisionData.RobotPose;
-import frc.robot.subsystems.VisionData.TargetPose;
+import frc.robot.subsystems.VisionData.VisionTarget;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+
+import java.util.List;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -42,9 +44,11 @@ public class Vision extends SubsystemBase {
     Timer tmr = new Timer();
 
     public PhotonTrackedTarget getBestTarget() {
-        // TODO: Replace method with something that isn't deprecated
-        PhotonPipelineResult result = camera.getLatestResult();
-        return (result.hasTargets()) ? result.getBestTarget() : null;
+        // TO DONE: Replace method with something that isn't deprecated
+        // PhotonPipelineResult result = camera.getLatestResult();
+        List<PhotonPipelineResult> result = camera.getAllUnreadResults();
+        //TODO, refactor for intended/better usage, instead of limiting ourselves to 1 result
+        return (!result.isEmpty()) ? result.get(0).getBestTarget() : null;
     }
 
     public Transform3d getTargetTransform() {
@@ -67,7 +71,7 @@ public class Vision extends SubsystemBase {
         return (target != null) ? target.getBestCameraToTarget().getY() : -1;
     }
 
-    public void updateTargetPose(TargetPose targetpose) {
+    public void updateTargetPose(VisionTarget targetpose) {
         targetpose.yaw = getTargetYaw();
         targetpose.x = getTargetDistanceX();
         targetpose.y = getTargetDistanceY();
