@@ -42,13 +42,20 @@ public class Vision extends SubsystemBase {
     PhoenixPIDController turnPID = new PhoenixPIDController(0, 0, 0);
     PhoenixPIDController drivePID = new PhoenixPIDController(0, 0, 0);
     Timer tmr = new Timer();
+    
+    //the results should be updated once per loop, so it's being updated in periodic
+    private List<PhotonPipelineResult> latestResults= List.of();
 
     public PhotonTrackedTarget getBestTarget() {
         // TO DONE: Replace method with something that isn't deprecated
         // PhotonPipelineResult result = camera.getLatestResult();
-        List<PhotonPipelineResult> result = camera.getAllUnreadResults();
+        // List<PhotonPipelineResult> result = getAllResult();
         //TODO, refactor for intended/better usage, instead of limiting ourselves to 1 result
-        return (!result.isEmpty()) ? result.get(0).getBestTarget() : null;
+        return (!latestResults.isEmpty()) ? latestResults.get(0).getBestTarget() : null;
+    }
+    
+    public List<PhotonTrackedTarget> getAllResults(){
+        return latestResults.get(0).getTargets();
     }
 
     public Transform3d getTargetTransform() {
@@ -145,7 +152,12 @@ public class Vision extends SubsystemBase {
         });
         ret.addRequirements(drivetrain);
         return ret;
-    }              
+    }
+    
+    @Override
+    public void periodic(){
+        latestResults = camera.getAllUnreadResults();
+    }
 
     public Vision(CommandSwerveDrivetrain train, String Cam) {
         this.camera = new PhotonCamera(Cam);
