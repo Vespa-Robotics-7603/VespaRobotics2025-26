@@ -46,7 +46,7 @@ public class CoralIntake implements Subsystem {
     }
     public Command CoralOut(Supplier<Double> triggerAxis){
         return run(() -> {
-            intakeMotor.set(ControlMode.PercentOutput, -triggerAxis.get()*TURN_OUT_ROT);
+            intakeMotor.set(ControlMode.PercentOutput, triggerAxis.get()*TURN_OUT_ROT);
         });
     }
     

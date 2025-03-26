@@ -9,5 +9,5 @@ public class ElevatorConstants {
 
     //TODO: get actual max rotation please please please brian and team
     public static final double MIN_ROT = -10;
-    public static final double MAX_ROT = 340;
+    public static final double MAX_ROT = 280;
 }
