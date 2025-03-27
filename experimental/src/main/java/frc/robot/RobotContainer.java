@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.SwerveUtils.AprilTagFollower;
 import frc.robot.SwerveUtils.TrajectoryTarget2d;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Algae;
@@ -27,6 +28,7 @@ import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.CoralPivot;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.TrajectoryFollower;
+import frc.robot.subsystems.Vision;
 
 // import frc.robot.subsystems.Vision;
 
@@ -51,6 +53,10 @@ public class RobotContainer {
     public final CoralPivot arm = CoralPivot.getInst();
     public final CoralIntake coral = CoralIntake.getInst();
     public final Algae algae = Algae.getInst();
+    public final Vision photonVision = new Vision(drivetrain);
+    
+    public final TrajectoryFollower follower = new TrajectoryFollower(drivetrain);
+    public final AprilTagFollower APTFollower = new AprilTagFollower(photonVision, follower);
     
     /** 
      * The current mode of the controler
@@ -79,7 +85,7 @@ public class RobotContainer {
         algae.setDefaultCommand(algae.AlgaeStopCommand());
         coral.setDefaultCommand(coral.holdCom());
 
-        CommandScheduler.getInstance().registerSubsystem(elevator, arm, coral, algae);
+        CommandScheduler.getInstance().registerSubsystem(elevator, arm, coral, algae, photonVision);
         
         Command upOneLevel = Commands.parallel(
             elevator.oneLevelUp(), arm.toOutput()
