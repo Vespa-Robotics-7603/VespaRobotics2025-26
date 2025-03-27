@@ -69,6 +69,7 @@ public class Elevator implements Subsystem {
     
     // level must range between 0 and 3 inclusive
     public void goToLevel(int level){
+        currentLevel = level;
         upDownMotor.goToSetPosition(level);
     }
     
