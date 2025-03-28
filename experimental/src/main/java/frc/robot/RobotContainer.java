@@ -14,6 +14,8 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -85,6 +87,10 @@ public class RobotContainer {
             )
         );
         
+        CommandScheduler.getInstance().registerSubsystem(elevator, arm, coral, algae);
+
+
+        //DriverStation.startDataLog(DataLogManager.getLog());
         algae.setDefaultCommand(algae.AlgaeStopCommand());
         coral.setDefaultCommand(coral.holdCom());
         
@@ -163,6 +169,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Elevator Up", elevator.toAutoOutput());
         NamedCommands.registerCommand("Coral Out", coral.CoralOutCom());
         NamedCommands.registerCommand("Roll Off", algae.RollOffCommand());
+        NamedCommands.registerCommand("Output Position", arm.toOutput());
         //return Commands.print("No autonomous command configured");
         // TrajectoryTarget2d targetinfo = new TrajectoryTarget2d(1, 1, Math.PI / 2);
         // return new TrajectoryFollower(drivetrain).moveToTarget(3, 3, targetinfo);

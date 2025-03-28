@@ -37,6 +37,18 @@
         {
           "type": "named",
           "data": {
+            "name": "Output Position"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Coral Out"
           }
         }
