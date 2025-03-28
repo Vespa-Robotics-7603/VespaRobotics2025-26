@@ -299,13 +299,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
     public Pose2d getPose(){
-        return getState().Pose;
+        return getStateCopy().Pose;
     }
     public void resetPose(){
         this.tareEverything();
     }
     public ChassisSpeeds getRobotRelativeSpeeds(){
-        return getState().Speeds;
+        return getStateCopy().Speeds;
     }
     public void drive(ChassisSpeeds speeds){
         //this.setControl(SwerveRequest);

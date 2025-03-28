@@ -136,13 +136,10 @@ public class RobotContainer {
         // drivetrain.resetPose(null);
         
         joystick.b().onTrue(
-            Commands.sequence(
-                Commands.runOnce(drivetrain::tareEverything, drivetrain),
-                follower.generateMovementCommand(
+            follower.wrapGeneratedCommand(
                 new TrajectoryTarget2d(
                     1, 0, 0
                 )
-            )
             )
         );
 

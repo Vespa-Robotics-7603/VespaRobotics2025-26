@@ -123,7 +123,10 @@ public class TrajectoryFollower {
             Commands.runOnce(()->oldPose.get(), drivetrain), //first get run, should store the pose
             movementCommand,
             Commands.runOnce(()->{
-                drivetrain.resetPose(oldPose.get());//second call, should return stored value
+                Pose2d oldPose2d = oldPose.get() //second call, should return stored value
+                    .relativeTo(drivetrain.getPose())//this should give back an accurate pose
+                ;
+                drivetrain.resetPose(oldPose2d);
             }, drivetrain)
         );
         
