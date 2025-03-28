@@ -1,7 +1,7 @@
 package frc.robot.constants;
 
 public class TrajectoryConstants{
-    public final static double MAX_SPEED = 10;
+    public final static double MAX_SPEED = 7;
     public final static double MAX_ACCELERATION = 3;
     public final static double MAX_ROTATIONAL_SPEED = 4;
     public final static double MAX_ROTATIONAL_ACCELERATION = 3.14; 

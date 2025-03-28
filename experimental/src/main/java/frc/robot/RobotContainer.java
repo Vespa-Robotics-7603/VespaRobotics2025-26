@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.SwerveUtils.AprilTagFollower;
+import frc.robot.SwerveUtils.AprilTagFollower.FollowTagData;
 import frc.robot.SwerveUtils.TrajectoryTarget2d;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Algae;
@@ -73,6 +74,8 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
+        CommandScheduler.getInstance().registerSubsystem(elevator, arm, coral, algae, photonVision);
+
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> drive
@@ -84,8 +87,6 @@ public class RobotContainer {
         
         algae.setDefaultCommand(algae.AlgaeStopCommand());
         coral.setDefaultCommand(coral.holdCom());
-
-        CommandScheduler.getInstance().registerSubsystem(elevator, arm, coral, algae, photonVision);
         
         Command upOneLevel = Commands.parallel(
             elevator.oneLevelUp(), arm.toOutput()
@@ -126,12 +127,30 @@ public class RobotContainer {
         // reset the field-centric heading on menu press
         joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         joystick.start().onTrue(Commands.print("drive train reset! :) so gracious! so professional!"));
+        
+        // Command findTag = APTFollower.alignWithTag(1, 
+        //     new FollowTagData(11, 0.5,0, Math.PI, joystick.y())
+        // );
+        
+        // joystick.b().onTrue(findTag);
+        // drivetrain.resetPose(null);
+        
+        joystick.b().onTrue(
+            Commands.sequence(
+                Commands.runOnce(drivetrain::tareEverything, drivetrain),
+                follower.generateMovementCommand(
+                new TrajectoryTarget2d(
+                    1, 0, 0
+                )
+            )
+            )
+        );
 
         //GENERATED COMMANDS (can be replaced)
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        ));
+        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
+        //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        // ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -14,10 +15,14 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 import frc.robot.SwerveUtils.TrajectoryTarget2d;
 import static frc.robot.constants.TrajectoryConstants.*;
+
+import java.util.function.Supplier;
 
 // TODO: Document and test everything, refactor if necessary.
 public class TrajectoryFollower {
@@ -77,7 +82,7 @@ public class TrajectoryFollower {
         TrajectoryConfig config = generateTrajectoryConfig(speed, acceleration);
         return TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
+            new Pose2d(0,0, new Rotation2d(0)),
             target.getWaypoints(),
             new Pose2d(target.getTranslation(), target.getRotation()),
             config
@@ -91,6 +96,41 @@ public class TrajectoryFollower {
       */
     public Trajectory generateTrajectory(TrajectoryTarget2d target){
         return generateTrajectory(MAX_SPEED, MAX_ACCELERATION, target);
+    }
+    
+    public Command wrapGeneratedCommand(SwerveControllerCommand movementCommand){
+        Supplier<Pose2d> oldPose = new Supplier<Pose2d>() {
+            Pose2d oldValue = null;
+            @Override
+            public Pose2d get() {
+                if (oldValue == null) {
+                    //get pose
+                    oldValue = drivetrain.getPose();
+                    return oldValue;
+                }
+                else{
+                    //already run, so return old value
+                    Pose2d ret = oldValue;
+                    oldValue = null;
+                    return ret;
+                }
+                //this should act like a flip flop gate, switching from collecting pose, to giving it
+                //I hope this works
+            }
+            
+        };
+        return Commands.sequence(
+            Commands.runOnce(()->oldPose.get(), drivetrain), //first get run, should store the pose
+            movementCommand,
+            Commands.runOnce(()->{
+                drivetrain.resetPose(oldPose.get());//second call, should return stored value
+            }, drivetrain)
+        );
+        
+    }
+    
+    public Command wrapGeneratedCommand(TrajectoryTarget2d target){
+        return wrapGeneratedCommand(generateMovementCommand(target));
     }
     
     /**
