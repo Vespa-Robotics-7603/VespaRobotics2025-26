@@ -48,8 +48,8 @@ public class AprilTagFollower {
         List<PhotonTrackedTarget> topTargets = photonVison.getAllTopResults();
         // System.out.println("Got them");
         List<PhotonTrackedTarget> bottomTargets = photonVison.getAllBottomResults();
-        List<PhotonTrackedTarget> targets = new ArrayList<>(topTargets);
-        targets.addAll(bottomTargets);
+        List<PhotonTrackedTarget> targets = new ArrayList<>(bottomTargets);
+        targets.addAll(topTargets);
         for (PhotonTrackedTarget target : topTargets) {
             if(!stopFollowing && data.containsKey(target.getFiducialId())){
                 //run schedule command maker
