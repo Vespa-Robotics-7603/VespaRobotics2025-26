@@ -45,6 +45,9 @@ public class RobotContainer {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    private final SwerveRequest.FieldCentric driveLowerSpeed = new SwerveRequest.FieldCentric()
+            .withDeadband((MaxSpeed/2) * 0.1).withRotationalDeadband((MaxAngularRate/2) * 0.1) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -141,13 +144,21 @@ public class RobotContainer {
         // joystick.b().onTrue(findTag);
         // drivetrain.resetPose(null);
         
-        joystick.b().onTrue(
-            follower.wrapGeneratedCommand(
-                new TrajectoryTarget2d(
-                    1, 0, 0
-                )
-            )
-        );
+        // joystick.b().onTrue(
+        //     follower.wrapGeneratedCommand(
+        //         new TrajectoryTarget2d(
+        //             1, 0, 0
+        //         )
+        //     )
+        // );
+        
+        // joystick.b().whileTrue(
+        //     drivetrain.applyRequest(() -> driveLowerSpeed
+        //         .withVelocityX(-joystick.getLeftY() * (MaxSpeed/2)) // Drive forward with negative Y (forward)
+        //         .withVelocityY(-joystick.getLeftX() * (MaxSpeed/2)) // Drive left with negative X (left)
+        //         .withRotationalRate(-joystick.getRightX() * (MaxAngularRate/2)) // Drive counterclockwise with negative X (left)
+        //     )
+        // );
 
         //GENERATED COMMANDS (can be replaced)
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));

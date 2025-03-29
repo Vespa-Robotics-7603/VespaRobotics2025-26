@@ -120,7 +120,10 @@ public class TrajectoryFollower {
             
         };
         return Commands.sequence(
-            Commands.runOnce(()->oldPose.get(), drivetrain), //first get run, should store the pose
+            Commands.runOnce(()->{
+                oldPose.get();
+                drivetrain.tareEverything();
+            }, drivetrain), //first get run, should store the pose
             movementCommand,
             Commands.runOnce(()->{
                 Pose2d oldPose2d = oldPose.get() //second call, should return stored value
