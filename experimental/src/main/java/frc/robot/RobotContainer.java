@@ -169,6 +169,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Elevator Up", elevator.toAutoOutput());
         NamedCommands.registerCommand("Coral Out", coral.CoralOutCom());
         NamedCommands.registerCommand("Roll Off", algae.RollOffCommand());
+        NamedCommands.registerCommand("Stop Rolling", algae.AlgaeStopCommand());
         NamedCommands.registerCommand("Output Position", arm.toOutput());
         //return Commands.print("No autonomous command configured");
         // TrajectoryTarget2d targetinfo = new TrajectoryTarget2d(1, 1, Math.PI / 2);
